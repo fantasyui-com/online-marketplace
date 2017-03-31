@@ -1,6 +1,6 @@
 {
   "name": "online-marketplace",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Simple online marketplace for selling files.",
   "main": "index.js",
   "scripts": {
