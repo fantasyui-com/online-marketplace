@@ -100,7 +100,7 @@ class OnlineMarketplace {
     app.use( await this.model() );
 
     app.get("/", (req, res) => {
-      res.render("page-home", req.state );
+      res.render("index", req.state );
     });
 
     app.get(this.options.links.user, (req, res) => {
@@ -109,7 +109,7 @@ class OnlineMarketplace {
         return res.redirect(this.options.links.login);
       }
 
-      res.render("page-user", req.state );
+      res.render("user", req.state );
 
     });
 
@@ -164,7 +164,7 @@ class OnlineMarketplace {
         return res.redirect(this.options.links.user);
       }
 
-      res.render("page-in", req.state )
+      res.render("login", req.state )
     });
 
     app.post(this.options.links.login, async (req, res) => {
@@ -212,7 +212,7 @@ class OnlineMarketplace {
 
     });
 
-    app.get(this.options.links.signup, (req, res) => { res.render("page-up", req.state ) });
+    app.get(this.options.links.signup, (req, res) => { res.render("signup", req.state ) });
 
     app.post(this.options.links.signup, async (req, res) => {
 
@@ -276,9 +276,7 @@ class OnlineMarketplace {
           return res.redirect(this.options.links.user);
         }
       }
-
-
-      res.render("page-email-confirmation", req.state )
+      res.render("confirm", req.state);
     });
 
     app.post(this.options.links.confirm, async (req, res) => {
