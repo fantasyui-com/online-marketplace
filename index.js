@@ -20,6 +20,18 @@ class OnlineMarketplace {
 
     let defaults = { };
     this.options = Object.assign({}, defaults, configuration);
+
+    // ENHANCE PROGRAM METADATA BASED ON CONFIGURATION
+    // create data lookup set for blacklisting;
+    this.options.structure.forEach(device => {
+      device.dataSet = new Set( device.data.map(i=>i.id) ); // create a set from id/s
+    });
+    // create easy links (fun for ejs)
+    this.options.links = {};
+    this.options.structure.forEach(device => {
+      this.options.links[device.name] = device.path;
+    });
+
     this.app = express();
 
    }
@@ -120,7 +132,7 @@ class OnlineMarketplace {
     // create application/x-www-form-urlencoded parser
     const urlencodedParser = body.urlencoded({ extended: true });
 
-    const userIsRequired =  async (req, res, next) => {
+    const validUserIsRequired =  async (req, res, next) => {
       if(!req.state.model.user){
         return res.redirect(this.options.links.login);
       }
@@ -130,23 +142,76 @@ class OnlineMarketplace {
         return res.redirect(this.options.links.login);
       }
       next();
-
     }
-
-
-
-    let routeDefinition = {
-      path: '/legal',
-      form: [
-        {name:'', type:'', optional:true}
-      ]
-
-    };
-    requestValidator( app, routeDefinition )
 
     app.set("view engine", "ejs");
 
     app.use( await this.model.bind(this) );
+
+
+
+    this.options.structure.forEach( device => {
+      const args = [device.path];
+      if(device.method === 'post') args.push ( urlencodedParser ) ;
+      if(device.login) args.push ( validUserIsRequired ) ;
+      args.push ( (req, res, next) => {
+        const errors = [];
+        let input;
+        if(device.method === 'get') input = req.query;
+        if(device.method === 'post') input = req.body;
+        // whitelisted stuff
+        if( device.data ){
+          device.data.forEach(item=>{
+            if(input[item.id]){
+              if( this.isInvalid(item.type, input[item.id]) ){
+                errors.push(`${device.method}:/${device.path}/${item.id} is invalid.`)
+              }else{
+                // perfect!
+              }
+            }else{
+              if(item.required){
+                errors.push(`${device.method}:/${device.path}/${item.id} is required.`)
+              }else{
+                // item is missing, but it is not required.
+              }
+            }
+          });
+        }
+        // eveything else is blacklisted.
+        Object.keys(input).forEach(item=>{
+          if(device.dataSet && device.dataSet.has(item)){
+            // fantasic!
+          }else{
+            errors.push(`${device.method}:/${device.path}/${item} is not allowed.`)
+          }
+        });
+
+        if(errors.length){
+          return next( new Error(errors.join(', ')) );
+        }else{
+          next();
+        }
+      });
+      app[device.method].apply(app, args );
+    });
+
+
+
+
+
+
+
+
+
+        // let routeDefinition = {
+        //   path: '/legal',
+        //   form: [
+        //     {name:'', type:'', optional:true}
+        //   ]
+        //
+        // };
+        // requestValidator( app, routeDefinition )
+
 
 
     app.get("/", (req, res) => {
@@ -165,11 +230,11 @@ class OnlineMarketplace {
       res.render("browse", req.state );
     });
 
-    app.get(this.options.links.user, userIsRequired, (req, res) => {
+    app.get(this.options.links.user, validUserIsRequired, (req, res) => {
       res.render("user", req.state );
     });
 
-    app.post(this.options.links.support, urlencodedParser, userIsRequired, async (req, res) => {
+    app.post(this.options.links.support, urlencodedParser, validUserIsRequired, async (req, res) => {
       const _id = req.state.model.user._id;
       let updateData = {};
 
@@ -186,7 +251,7 @@ class OnlineMarketplace {
     });
 
 
-    app.post(this.options.links.update, urlencodedParser, userIsRequired, async (req, res) => {
+    app.post(this.options.links.update, urlencodedParser, validUserIsRequired, async (req, res) => {
       const _id = req.state.model.user._id;
       let updateData = {};
 
@@ -245,7 +310,7 @@ class OnlineMarketplace {
     });
 
 
-    app.post(this.options.links.password, urlencodedParser, userIsRequired, async (req, res) => {
+    app.post(this.options.links.password, urlencodedParser, validUserIsRequired, async (req, res) => {
       const _id = req.state.model.user._id;
       let updateData = {};
 
@@ -302,7 +367,7 @@ class OnlineMarketplace {
       res.render("login", req.state )
     });
 
-    app.post(this.options.links.login, urlencodedParser, async (req, res) => {
+    app.post(this.options.links.authenticate, urlencodedParser, async (req, res) => {
 
       let username = req.body.username;
       let password = req.body.password;
@@ -390,7 +455,7 @@ class OnlineMarketplace {
       res.redirect('/');
     });
 
-    app.get(this.options.links.confirm, userIsRequired, async (req, res) => {
+    app.get(this.options.links.confirm, validUserIsRequired, async (req, res) => {
 
       if(req.state.model.user && (req.state.model.user.email !== req.state.model.user.confirmed)){
         // NOTE: email is already confirmed send the user home
@@ -413,7 +478,7 @@ class OnlineMarketplace {
 
     });
 
-    app.post(this.options.links.confirm, urlencodedParser, userIsRequired, async (req, res) => {
+    app.post(this.options.links.confirm, urlencodedParser, validUserIsRequired, async (req, res) => {
 
       if(req.state.model.user && (req.state.model.user.email !== req.state.model.user.confirmed)){
         // NOTE: email is already confirmed send the user home
@@ -431,7 +496,10 @@ class OnlineMarketplace {
 
     });
 
-
+    app.use(function (err, req, res, next) {
+      res.render("error", Object.assign({}, req.state, {message: err.message} ));
+      res.status(500);
+    })
 
     this.app.listen(this.options.serverPort, this.options.serverHostname, () => {
       console.log(`Server running at http://${this.options.serverHostname}:${this.options.serverPort}/`);
