@@ -24,6 +24,8 @@ const onlineMarketplace = new OnlineMarketplace({
      signup: "/signup",
     confirm: "/confirm",
 
+    support: '/support', // send a message to tech support
+
     update: '/update', // update user profile
     password: '/password', // update user password
   },

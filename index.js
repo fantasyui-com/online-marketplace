@@ -10,6 +10,8 @@ const userManager = new UserManager({storeLocation: './user-accounts/' ,});
 
 const validator = require('validator');
 const zxcvbn = require('zxcvbn');
+const capitalize = require('lodash/capitalize');
+const kebabCase = require('lodash/kebabCase');
 
 
 class OnlineMarketplace {
@@ -30,7 +32,9 @@ class OnlineMarketplace {
         req.state.link = this.options.links;
 
         // by default model user is null.
-        req.state.model.user = null;
+        req.state.model.user = null; // no user
+        req.state.model.activity = []; // no activity
+        req.state.model.actions = []; // no actions to be undertaken
 
         req.state.command = {};
 
@@ -45,6 +49,7 @@ class OnlineMarketplace {
             let user = await userManager.userGet(req[this.options.clientSessionsCookieName].username);
             // NOTE: model.user is only set when serManager.userGet is a success.
             req.state.model.user = user;
+            req.state.model.activity = user.notes;
 
           } catch(err) {
 
@@ -79,6 +84,16 @@ class OnlineMarketplace {
         if( zxcvbn(value).score < 3 ) return INVALID;
 
         return IS_OK;
+
+    } else if(type === 'first-name'){
+      if( value.length < 2 ) return INVALID;
+      if( !validator.isAlpha(value) ) return INVALID;
+      return IS_OK;
+
+    } else if(type === 'last-name'){
+      if( value.length < 2 ) return INVALID;
+      if( !validator.isAlpha(value) ) return INVALID;
+      return IS_OK;
 
     } else if(type === 'email'){
 
@@ -155,63 +170,21 @@ class OnlineMarketplace {
       res.render("user", req.state );
     });
 
-    // app.post(this.options.links.user, urlencodedParser, userIsRequired, async (req, res) => {
-    //
-    //   // get id from user object loaded by user manager based on encrypted session, set from within the sever code.
-    //   // user id or username cannot be changed.
-    //   const _id = req.state.model.user._id;
-    //
-    //   // NOTE: we will be building the object based on what came over,
-    //   // if the user did not send in a new password, no changes to the password will be made.
-    //   // we begin with an empty object.
-    //   let updateData = {};
-    //
-    //
-    //
-    //   // This is tainted and requires validation.
-    //   const newPassword = req.body.new_password;
-    //   if(newPassword){
-    //     if( this.isInvalid('password', newPassword) ){
-    //       return res.render("error", Object.assign({}, req.state, {message: 'New password is too weak or invalid.'} ));
-    //     }
-    //     updateData.password = newPassword;
-    //   }
-    //
-    //   const changesNeedToBeMade = (Object.keys(updateData).length > 0);
-    //   const changesRequireThePassword = (updateData.password);
-    //
-    //   if(changesNeedToBeMade){ // there are changes
-    //     if(changesRequireThePassword){ // changes requre user password
-    //
-    //       // NOTE: oldPassword is tainted but does not require string validation it self, we are trying to get rid of it.
-    //       const oldPassword = req.body.old_password;
-    //       if(!oldPassword){
-    //         return res.render("error", Object.assign({}, req.state, {message: 'Password is required to update this information.'} ));
-    //       }
-    //
-    //       let user = await userManager.userGet(_id);
-    //       if(user.password === oldPassword){
-    //         await userManager.userMod(_id, updateData);
-    //         res.redirect(this.options.links.user);
-    //       }else{
-    //         return res.render("error", Object.assign({}, req.state, {message: 'The password you entered was invalid and no changes have been made to the account.'} ));
-    //       }
-    //
-    //     }else{
-    //
-    //       // NOTE: These changes do not require user's password.
-    //       await userManager.userMod(_id, updateData);
-    //       res.redirect(this.options.links.user);
-    //
-    //     }
-    //   } // there are changes
-    //
-    //   // upon updating information, the user is redirected.
-    //   res.redirect(this.options.links.user);
-    //
-    // });
+    app.post(this.options.links.support, urlencodedParser, userIsRequired, async (req, res) => {
+      const _id = req.state.model.user._id;
+      let updateData = {};
+
+      // NOTE: This is tainted and requires validation.
+
+      const supportSubject = req.body.subject;
+      const supportMessage = req.body.message;
+
+      // TODO: send message...
 
 
+      res.redirect(this.options.links.user);
+
+    });
 
 
     app.post(this.options.links.update, urlencodedParser, userIsRequired, async (req, res) => {
@@ -227,11 +200,45 @@ class OnlineMarketplace {
         updateData.email = newEmail;
       }
 
+      // NOTE: This is tainted and requires validation.
+      const newFirstName = req.body.new_first_name;
+      if(newFirstName){
+        if( this.isInvalid('first-name', newFirstName) ){
+          return res.render("error", Object.assign({}, req.state, {message: 'Invalid First Name'} ));
+        }
+        updateData.firstName = newFirstName;
+      }
+
+      // NOTE: This is tainted and requires validation.
+      const newLastName = req.body.new_last_name;
+      if(newLastName){
+        if( this.isInvalid('last-name', newLastName) ){
+          return res.render("error", Object.assign({}, req.state, {message: 'Invalid Last Name'} ));
+        }
+        updateData.lastName = newLastName;
+      }
+
       // << HEY! GOT MORE FIELDS?, ADD THEM HERE... >>
 
       const changesNeedToBeMade = (Object.keys(updateData).length > 0);
       if(changesNeedToBeMade){
-        await userManager.userMod(_id, updateData);
+
+        let user = await userManager.userGet(_id);
+
+        const things = [];
+        Object.keys(updateData).forEach(key=>{
+          let val = updateData[key];
+          if(updateData[key] !== user[key]){
+            things.push( kebabCase(key).replace(/-/,' ') );
+          }
+        });
+        console.log('THings',things)
+        if(things.length){
+          user.notes.push( `${new Date()}: Updated ${things.join(', ')}.` );
+        }
+        Object.assign({}, user, updateData);
+        await userManager.userMod(_id, user);
+
       }
       res.redirect(this.options.links.user);
 
@@ -264,7 +271,7 @@ class OnlineMarketplace {
       if(changesNeedToBeMade){ // there are changes
           let user = await userManager.userGet(_id);
           if(user.password === oldPassword){
-            user.notes.push( `${new Date()}: Password change` );
+            user.notes.push( `${new Date()}: Changed password.` );
             user.password = newPassword;
             Object.assign({}, user, updateData);
             await userManager.userMod(_id, user);
@@ -275,7 +282,9 @@ class OnlineMarketplace {
           // NOTE: These changes do not require user's password.
           await userManager.userMod(_id, updateData);
        } // there are changes
+
       res.redirect(this.options.links.user);
+
     });
 
 

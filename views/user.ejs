@@ -3,14 +3,14 @@
 <%- include('head.ejs') -%>
 <body>
 <%- include('navigation.ejs') -%>
-<div class="container-fluid pt-3">
+<div class="container-fluid pt-3" style="min-height: 75vh;">
 
 
   <div class="row py-3">
 
 
     <div class="col-lg-6">
-      <div class="card py-3 my-3">
+      <div class="card py-3 my-3" style="min-height: 75vh;">
         <div class="card-block">
           <h4 class="card-title">Account Actions</h4>
           <p class="card-text"></p>
@@ -24,7 +24,7 @@
 
             <% if (model.user.email && (model.user.email !== model.user.confirmed) ) { %>
               <div class="alert alert-warning" role="alert">
-                <strong>Note!</strong> you still need to <a class="alert-link" href="<%= link.confirm %>">confirm</a> your email address.
+                <strong>Note!</strong> you still need to <a class="alert-link" href="<%= link.confirm %>">confirm</a> your <%= model.user.email %> address.
                 <p class="mb-0">
                   <a class="btn btn-sm btn-warning" href="<%= link.confirm %>">Confirm Email</a>
                 </p>
@@ -33,29 +33,55 @@
 
 
 
-            <button type="submit" class="btn btn-primary">Update Password</button>
+
           </form>
         </div>
       </div>
     </div>
 
+
+
+
     <div class="col-lg-6">
-      <div class="card py-3 my-3">
+      <div class="card py-3 my-3" style="min-height: 75vh;">
+        <div class="card-block">
+          <h4 class="card-title">Your Purchases</h4>
+          <p class="card-text"></p>
+
+
+
+        </div>
+      </div>
+    </div>
+
+
+
+
+    <div class="col-lg-6">
+      <div class="card py-3 my-3" style="min-height: 75vh;">
         <div class="card-block">
           <h4 class="card-title">Account Profile</h4>
           <p class="card-text"></p>
           <form action="<%= link.update %>" method="post" enctype="application/x-www-form-urlencoded">
-            <div class="form-group row">
-              <label class="col-sm-2 col-form-label">Username</label>
-              <div class="col-sm-10">
-                <p class="form-control-static"><%= model.user._id %></p>
-              </div>
+
+            <div class="form-group">
+              <label for="new_first_name">First Name</label>
+              <input type="text" class="form-control" id="new_first_name" name="new_first_name" aria-describedby="firstNameHelp" placeholder="Enter first name" value="<%= model.user.firstName %>">
+              <small id="firstNameHelp" class="form-text text-muted">Please keep your profile information up-to-date.</small>
             </div>
+
+            <div class="form-group">
+              <label for="new_last_name">Last Name</label>
+              <input type="text" class="form-control" id="new_last_name" name="new_last_name" aria-describedby="lastNameHelp" placeholder="Enter last name" value="<%= model.user.lastName %>">
+              <small id="lastNameHelp" class="form-text text-muted">We need your basic information to track your purchases and verify your account/security.</small>
+            </div>
+
             <div class="form-group">
               <label for="new_email">Email address</label>
               <input type="email" class="form-control" id="new_email" name="new_email" aria-describedby="emailHelp" placeholder="Enter email" value="<%= model.user.email %>">
               <small id="emailHelp" class="form-text text-muted">Please keep your email up-to-date, we need it to help you recover lost passwords and keep track of your purchases.</small>
             </div>
+
             <button type="submit" class="btn btn-primary">Update Profile</button>
           </form>
         </div>
@@ -64,7 +90,7 @@
 
 
     <div class="col-lg-6">
-      <div class="card py-3 my-3">
+      <div class="card py-3 my-3" style="min-height: 75vh;">
         <div class="card-block">
           <h4 class="card-title">Account Security</h4>
           <p class="card-text"></p>
@@ -91,6 +117,55 @@
         </div>
       </div>
     </div>
+
+    <div class="col-lg-6">
+      <div class="card py-3 my-3" style="min-height: 75vh;">
+
+        <div class="card-block">
+          <h4 class="card-title">Recent Account Activity</h4>
+        </div>
+
+        <ul class="list-group list-group-flush">
+          <% model.activity.slice(-7).forEach(function(item){ %>
+            <li class="list-group-item small"><%= item %></li>
+
+          <% }); %>
+        </ul>
+
+        <div class="card-block">
+          <p class="card-text"></p>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="col-lg-6">
+      <div class="card py-3 my-3" style="min-height: 75vh;">
+        <div class="card-block">
+          <h4 class="card-title">Contact Support</h4>
+          <p class="card-text"></p>
+
+          <form action="<%= link.support %>" method="post" enctype="application/x-www-form-urlencoded">
+
+            <div class="form-group">
+              <label for="subject">Subject</label>
+              <input type="text" class="form-control" id="subject" name="subject" aria-describedby="subjectHelp" placeholder="Enter message subject">
+              <small id="subjectHelp" class="form-text text-muted">Please be specific.</small>
+            </div>
+
+            <div class="form-group">
+              <label for="message">Message</label>
+              <textarea class="form-control" id="message" rows="5"></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Send Message</button>
+          </form>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
   </div>
 
 
