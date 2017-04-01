@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('head.ejs') -%>
+<body>
+<%- include('navigation.ejs') -%>
+<div class="container-fluid py-3">
+  <div class="row">
+    <div class="col">
+      <div class="card">
+        <div class="card-block">
+          <h4 class="card-title">Login Form</h4>
+          <p class="card-text">Please enter your username and password to continue.</h4>
+          <form action="<%= link.login %>" method="post" enctype="application/x-www-form-urlencoded">
+            <div class="form-group">
+              <label for="username">Username</label>
+              <input type="text" class="form-control" id="username" name="username" aria-describedby="usernameHelp" placeholder="Enter Username">
+            </div>
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input type="password" class="form-control" id="password" name="password" aria-describedby="passwordHelp" placeholder="Password">
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<%- include('footer.ejs') -%>
+</body>
+</html>

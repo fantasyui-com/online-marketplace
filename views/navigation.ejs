@@ -1,28 +1,40 @@
-<nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse fixed-top">
+<nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse not-fixed-top">
   <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarPrimary" aria-controls="navbarPrimary" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
-  <a class="navbar-brand" href="#"><%= model.primaryTitle %></a>
-
+  <a class="navbar-brand" href="<%= link.home %>"><%= model.primaryTitle %></a>
   <div class="collapse navbar-collapse" id="navbarPrimary">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item active">
-        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="<%= link.home %>">Home <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/about">About</a>
+        <a class="nav-link" href="<%= link.about %>">About</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/products">Products</a>
+        <a class="nav-link" href="<%= link.products %>">Products</a>
       </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="<%= model.primaryUrl %>" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
-        <div class="dropdown-menu" aria-labelledby="dropdown01">
-          <a class="dropdown-item" href="#">Action</a>
-          <a class="dropdown-item" href="#">Another action</a>
-          <a class="dropdown-item" href="#">Something else here</a>
-        </div>
-      </li>
+
+      <% if (model.user) { %>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="<%= link.products %>" id="dropdownUser" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><%= model.user._id %></a>
+          <div class="dropdown-menu" aria-labelledby="dropdownUser">
+            <a class="dropdown-item" href="<%= link.user %>">Home</a>
+            <a class="dropdown-item" href="<%= link.logout %>">Logout</a>
+          </div>
+        </li>
+      <% } else { %>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="<%= link.user %>" id="dropdownUser" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">User</a>
+          <div class="dropdown-menu" aria-labelledby="dropdownUser">
+            <a class="dropdown-item" href="<%= link.signup %>">Sign Up</a>
+            <a class="dropdown-item" href="<%= link.login %>">Login</a>
+          </div>
+        </li>
+      <% } %>
+
+
+
     </ul>
   </div>
 </nav>
