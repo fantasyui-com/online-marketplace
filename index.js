@@ -80,10 +80,9 @@ class OnlineMarketplace {
 
     } else if(type === 'password'){
 
-        if( value.length < 10 ) return INVALID;
-        if( zxcvbn(value).score < 3 ) return INVALID;
-
-        return IS_OK;
+      if( value.length < 10 ) return INVALID;
+      if( zxcvbn(value).score < 3 ) return INVALID;
+      return IS_OK;
 
     } else if(type === 'first-name'){
       if( value.length < 2 ) return INVALID;
@@ -221,8 +220,8 @@ class OnlineMarketplace {
       // << HEY! GOT MORE FIELDS?, ADD THEM HERE... >>
 
       const changesNeedToBeMade = (Object.keys(updateData).length > 0);
-      if(changesNeedToBeMade){
 
+      if(changesNeedToBeMade){
         let user = await userManager.userGet(_id);
 
         const things = [];
@@ -232,14 +231,15 @@ class OnlineMarketplace {
             things.push( kebabCase(key).replace(/-/,' ') );
           }
         });
-        console.log('THings',things)
+
         if(things.length){
           user.notes.push( `${new Date()}: Updated ${things.join(', ')}.` );
         }
-        Object.assign({}, user, updateData);
+        Object.assign(user, updateData);
         await userManager.userMod(_id, user);
 
       }
+
       res.redirect(this.options.links.user);
 
     });
@@ -269,18 +269,18 @@ class OnlineMarketplace {
       const changesNeedToBeMade = (newPassword);
 
       if(changesNeedToBeMade){ // there are changes
-          let user = await userManager.userGet(_id);
-          if(user.password === oldPassword){
-            user.notes.push( `${new Date()}: Changed password.` );
-            user.password = newPassword;
-            Object.assign({}, user, updateData);
-            await userManager.userMod(_id, user);
-            res.redirect(this.options.links.user);
-          } else {
-            return res.render("error", Object.assign({}, req.state, {message: 'The password you entered was invalid and no changes have been made to the account.'} ));
-          }
-          // NOTE: These changes do not require user's password.
-          await userManager.userMod(_id, updateData);
+        let user = await userManager.userGet(_id);
+        if(user.password === oldPassword){
+          user.notes.push( `${new Date()}: Changed password.` );
+          user.password = newPassword;
+          Object.assign(user, updateData);
+          await userManager.userMod(_id, user);
+          res.redirect(this.options.links.user);
+        } else {
+          return res.render("error", Object.assign({}, req.state, {message: 'The password you entered was invalid and no changes have been made to the account.'} ));
+        }
+        // NOTE: These changes do not require user's password.
+        await userManager.userMod(_id, updateData);
        } // there are changes
 
       res.redirect(this.options.links.user);
@@ -295,12 +295,10 @@ class OnlineMarketplace {
 
 
     app.get(this.options.links.login, (req, res) => {
-
       if(req.state.model.user){
         // NOTE: if user is logged in they are not allowed to access the login page until they log-out.
         return res.redirect(this.options.links.user);
       }
-
       res.render("login", req.state )
     });
 
@@ -309,6 +307,7 @@ class OnlineMarketplace {
       let username = req.body.username;
       let password = req.body.password;
 
+      // NOTE: the following means malformed username and not not necessarily no user, security only benefits from this.
       if( this.isInvalid('username', username) ){
         return res.render("error", Object.assign({}, req.state, {message: 'Invalid Username'} ));
       }
@@ -318,28 +317,27 @@ class OnlineMarketplace {
         return res.render("error", Object.assign({}, req.state, {message: 'Invalid Password'} ));
       }
 
-      try {
-
-        let exists = await userManager.userExists(username);
-        if(exists){
-
-          let user = await userManager.userGet(username);
-          // compare passwords
-          if(user.password === password){
-            // yay! user is valid.
-            req[this.options.clientSessionsCookieName].username = username;
-            res.redirect(this.options.links.user);
-          }else{
-            return res.render("error", Object.assign({}, req.state, {message: 'Invalid Password'} ));
-          }
-        }else{
-          return res.render("error", Object.assign({}, req.state, {message: 'Invalid Username'} ));
-        }
-
-      } catch(err){
-
-        throw err;
+      let exists = await userManager.userExists(username);
+      // NOTE: note the early exit.
+      if(!exists){
+        return res.render("error", Object.assign({}, req.state, {message: 'Invalid Username'} ));
       }
+
+      let user = await userManager.userGet(username);
+      // NOTE: note the early exit.
+      if(user.password !== password){
+        return res.render("error", Object.assign({}, req.state, {message: 'Invalid Password'} ));
+      }
+
+      // yay they made it! user is valid, gets the session setup
+      req[this.options.clientSessionsCookieName].username = username;
+
+      // log the activity
+      user.notes.push( `${new Date()}: Login` );
+      await userManager.userMod(username, user);
+
+      // and redirect to home page.
+      return res.redirect(this.options.links.user);
 
     });
 
@@ -432,8 +430,6 @@ class OnlineMarketplace {
       return res.redirect(this.options.links.user);
 
     });
-
-
 
 
 

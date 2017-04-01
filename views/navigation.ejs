@@ -14,30 +14,34 @@
         <a class="nav-link" href="<%= link.products %>">Products</a>
       </li>
 
-      <% if (model.user) { %>
 
-        <li class="nav-item">
-          <a class="nav-link" href="<%= link.user %>">Account</a>
-        </li>
-
-        <li class="nav-item">
-          <a class="nav-link" href="<%= link.logout %>">Logout</a>
-        </li>
-
-      <% } else { %>
-
-        <li class="nav-item">
-          <a class="nav-link" href="<%= link.signup %>">Sign Up</a>
-        </li>
-
-        <li class="nav-item">
-          <a class="nav-link" href="<%= link.login %>">Login</a>
-        </li>
-
-      <% } %>
 
 
 
     </ul>
+
+      <ul class="navbar-nav mr-auto">
+        <% if (model.user) { %>
+
+          <li class="nav-item">
+            <a class="nav-link" href="<%= link.user %>">Account</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link active" href="<%= link.logout %>">Logout</a>
+          </li>
+
+        <% } else { %>
+
+          <li class="nav-item">
+            <a class="nav-link" href="<%= link.signup %>">Sign Up</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link active" href="<%= link.login %>">Login</a>
+          </li>
+
+        <% } %>
+      </ul>
   </div>
 </nav>
