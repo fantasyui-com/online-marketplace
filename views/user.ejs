@@ -3,10 +3,44 @@
 <%- include('head.ejs') -%>
 <body>
 <%- include('navigation.ejs') -%>
-<div class="container-fluid py-3">
-  <div class="row">
-    <div class="col">
-      <div class="card">
+<div class="container-fluid pt-3">
+
+
+  <div class="row py-3">
+
+
+    <div class="col-lg-6">
+      <div class="card py-3 my-3">
+        <div class="card-block">
+          <h4 class="card-title">Account Actions</h4>
+          <p class="card-text"></p>
+          <form action="<%= link.user %>" method="post" enctype="application/x-www-form-urlencoded">
+            <div class="form-group row">
+              <label class="col-sm-2 col-form-label">Username</label>
+              <div class="col-sm-10">
+                <p class="form-control-static"><%= model.user._id %></p>
+              </div>
+            </div>
+            
+            <% if (model.user.email && (model.user.email !== model.user.confirmed) ) { %>
+              <div class="alert alert-warning" role="alert">
+                <strong>Note!</strong> you still need to <a class="alert-link" href="<%= link.confirm %>">confirm</a> your email address.
+                <p class="mb-0">
+                  <a class="btn btn-sm btn-warning" href="<%= link.confirm %>">Confirm Email</a>
+                </p>
+              </div>
+            <% } %>
+
+
+
+            <button type="submit" class="btn btn-primary">Update Password</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-6">
+      <div class="card py-3 my-3">
         <div class="card-block">
           <h4 class="card-title">Account Profile</h4>
           <p class="card-text"></p>
@@ -21,25 +55,47 @@
               <label for="new_email">Email address</label>
               <input type="email" class="form-control" id="new_email" name="new_email" aria-describedby="emailHelp" placeholder="Enter email" value="<%= model.user.email %>">
               <small id="emailHelp" class="form-text text-muted">Please keep your email up-to-date, we need it to help you recover lost passwords and keep track of your purchases.</small>
-              <% if (model.user.email && (model.user.email !== model.user.confirmed) ) { %>
-                <div class="alert alert-warning" role="alert">
-                  <strong>Note!</strong> you still need to <a class="alert-link" href="<%= link.confirm %>">confirm</a> your email address.
-                  <p class="mb-0">
-                    <a class="btn btn-sm btn-warning" href="<%= link.confirm %>">Confirm Email</a>
-                  </p>
-                </div>
-              <% } %>
-            </div>
-            <div class="form-group">
-              <label for="new_password">New Password</label>
-              <input type="password" class="form-control" id="new_password" name="new_password" placeholder="Password">
             </div>
             <button type="submit" class="btn btn-primary">Update Profile</button>
           </form>
         </div>
       </div>
     </div>
+
+
+    <div class="col-lg-6">
+      <div class="card py-3 my-3">
+        <div class="card-block">
+          <h4 class="card-title">Account Security</h4>
+          <p class="card-text"></p>
+          <form action="<%= link.user %>" method="post" enctype="application/x-www-form-urlencoded">
+            <div class="form-group row">
+              <label class="col-sm-2 col-form-label">Username</label>
+              <div class="col-sm-10">
+                <p class="form-control-static"><%= model.user._id %></p>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="old_password">Current Password</label>
+              <input type="password" class="form-control" id="old_password" name="old_password" placeholder="Enter your current password">
+            </div>
+
+            <div class="form-group">
+              <label for="new_password">New Password</label>
+              <input type="password" class="form-control" id="new_password" name="new_password" placeholder="Enter your new password">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Update Password</button>
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
+
+
+
+
 </div>
 <%- include('footer.ejs') -%>
 </body>

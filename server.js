@@ -5,11 +5,14 @@ const OnlineMarketplace = require('./index.js');
 
 const onlineMarketplace = new OnlineMarketplace({
 
-  clientSessionsSecret: 'eef62de5-6755-4353-a21e-042471e71bc3', // set this to a long random string!
+                serverPort: 8080,
+            serverHostname: '127.0.0.1',
 
-  serverPort: 8080,
-  serverHostname: '127.0.0.1',
+      clientSessionsSecret: 'eef62de5-6755-4353-a21e-042471e71bc3', // set this to a long random string!
+  clientSessionsCookieName: 'a138b116567ba', // set this to something random and unique to your program.
 
+
+  // ability to configure links
   links: {
        home: "/",
       about: "/about",
@@ -20,6 +23,9 @@ const onlineMarketplace = new OnlineMarketplace({
      logout: "/logout",
      signup: "/signup",
     confirm: "/confirm",
+
+    update: '/update', // update user profile
+    password: '/password', // update user password
   },
 
   baseStateModel: {
