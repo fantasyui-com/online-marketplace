@@ -1,3 +1,4 @@
+const pkg = require(__dirname+'/package.json');
 const OnlineMarketplace = require('./index.js');
 
 // Tip: You want to load this from a file or some safe place.
@@ -10,24 +11,24 @@ const onlineMarketplace = new OnlineMarketplace({
   serverHostname: '127.0.0.1',
 
   links: {
-                 home: "/",
-                about: "/about",
-             products: "/browse",
-                legal: "/legal",
-                 user: "/home",
-                login: "/login",
-               logout: "/logout",
-               signup: "/signup",
-              confirm: "/confirm",
+       home: "/",
+      about: "/about",
+   products: "/browse",
+      legal: "/legal",
+       user: "/home",
+      login: "/login",
+     logout: "/logout",
+     signup: "/signup",
+    confirm: "/confirm",
   },
 
   baseStateModel: {
 
-    primaryTitle: `Online Marketplace`,
-    primaryDescription: `Online Marketplace`,
-    primaryAuthor: `Captain Fantasy <fantasyui.com@gmail.com> (http://fantasyui.com)`,
-    primaryUrl: `http://fantasyui.com`,
-
+    title: `Fantasy Marketplace`,
+    description: `Online Marketplace`,
+    author: `Captain Fantasy <fantasyui.com@gmail.com> (http://fantasyui.com)`,
+    version: pkg.version,
+    license: pkg.license,
   }
 
 });

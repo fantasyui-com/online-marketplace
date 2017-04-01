@@ -102,6 +102,15 @@ class OnlineMarketplace {
     app.get("/", (req, res) => {
       res.render("index", req.state );
     });
+    app.get(this.options.links.legal, (req, res) => {
+      res.render("legal", req.state );
+    });
+    app.get(this.options.links.about, (req, res) => {
+      res.render("about", req.state );
+    });
+    app.get(this.options.links.products, (req, res) => {
+      res.render("browse", req.state );
+    });
 
     app.get(this.options.links.user, (req, res) => {
       if(!req.state.model.user){
@@ -265,18 +274,25 @@ class OnlineMarketplace {
         return res.redirect(this.options.links.login);
       }
 
-      if(req.state.model.user && req.state.model.user.emailConfirmed){
+      if(req.state.model.user && (req.state.model.user.email !== req.state.model.user.confirmed)){
         // NOTE: email is already confirmed send the user home
         return res.redirect(this.options.links.user);
       }
 
       if(req.query.code){
-        if(codeIsValid){
-          await userManager.userMod(_id, {emailConfirmed:true});
+
+        let codeIsValid = false;
+        let userHashValid = false;
+
+        if(codeIsValid && userHashValid){ // checks if the confirmation is for the current email
+          await userManager.userMod(_id, {confirmed:req.state.model.user.email});
           return res.redirect(this.options.links.user);
         }
+
       }
+
       res.render("confirm", req.state);
+
     });
 
     app.post(this.options.links.confirm, async (req, res) => {
@@ -286,17 +302,19 @@ class OnlineMarketplace {
         return res.redirect(this.options.links.user);
       }
 
-      if(req.state.model.user && req.state.model.user.emailConfirmed){
+      if(req.state.model.user && (req.state.model.user.email !== req.state.model.user.confirmed)){
         // NOTE: email is already confirmed send the user home
         return res.redirect(this.options.links.user);
       }
 
-      if(codeIsValid){
-        await userManager.userMod(_id, {emailConfirmed:true});
+      let codeIsValid = false;
+      let userHashValid = false;
+
+      if(codeIsValid && userHashValid){ // checks if the confirmation is for the current email
+        await userManager.userMod(_id, {confirmed:req.state.model.user.email});
       }
 
       return res.redirect(this.options.links.user);
-
 
     });
 
