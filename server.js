@@ -2,8 +2,10 @@ const pkg = require(__dirname + '/package.json');
 const OnlineMarketplace = require('./index.js');
 // Tip: You want to load this from a file or some safe place.
 const onlineMarketplace = new OnlineMarketplace({
-  serverPort: 8080,
-  serverHostname: '127.0.0.1',
+
+  port: 8080,
+  host: '127.0.0.1',
+
   clientSessionsSecret: 'eef62de5-6755-4353-a21e-042471e71bc3', // set this to a long random string!
   clientSessionsCookieName: 'a138b116567ba', // set this to something random and unique to your program.
 
@@ -11,9 +13,14 @@ const onlineMarketplace = new OnlineMarketplace({
 
   structure: [
 
+    /* NOTE:
+      Please be mindfull of endles loops of redirects from home -> home,
+      due to rules you may set below place as little demand on the home page as possible.
+    */
     {
       name: "home",
       method: 'get',
+      view: 'index',
       path: "/",
       data: [],
     },
@@ -21,13 +28,15 @@ const onlineMarketplace = new OnlineMarketplace({
     {
       name: "about",
       method: 'get',
+      view: 'about',
       path: "/about",
-      data: []
+      data: [{ id: 'test', type: 'email', required:false }],
     },
 
     {
       name: "products",
       method: 'get',
+      view: "products",
       path: "/products",
       data: []
     },
@@ -35,6 +44,7 @@ const onlineMarketplace = new OnlineMarketplace({
     {
       name: "legal",
       method: 'get',
+      view: "legal",
       path: "/legal",
       data: []
     },
@@ -43,6 +53,7 @@ const onlineMarketplace = new OnlineMarketplace({
       name: "user",
       login: true, // login is required
       method: 'get',
+      view: "user",
       path: "/home",
       data: []
     },
@@ -50,7 +61,16 @@ const onlineMarketplace = new OnlineMarketplace({
     {
       name: "signup",
       method: 'get',
+      view: "signup",
       path: "/signup",
+      data: []
+    },
+
+    {
+      name: "adduser",
+      method: 'post',
+      path: "/adduser",
+      verbose: true, /* show errors when signing up */
       data: [
         { id: 'username', type: 'username', required:true },
         { id: 'password', type: 'password', required:true }
@@ -60,6 +80,7 @@ const onlineMarketplace = new OnlineMarketplace({
     {
       name: "login",
       method: 'get',
+      view: "login",
       path: "/login",
       data: []
     },
@@ -86,6 +107,7 @@ const onlineMarketplace = new OnlineMarketplace({
       name: "confirm",
       login: true, // login is required
       method: 'get',
+      view: "confirm",
       path: "/confirm",
       data: [],
       description: "Confirm email address form."
@@ -107,6 +129,7 @@ const onlineMarketplace = new OnlineMarketplace({
       name: "support",
       description: "send a message to tech support",
       login: true, // login is required
+      verbose: true, /* show errors when attempting to communicate */
       method: 'post',
       path: '/support',
       data: [
@@ -119,12 +142,13 @@ const onlineMarketplace = new OnlineMarketplace({
       name: "update",
       description: "update user profile",
       login: true, // login is required
+      verbose: true, /* show errors when attempting to update profile */
       method: 'post',
       path: '/update',
       data: [
-        { id: 'email',     type: 'email', required:false },
-        { id: 'firstName', type: 'first-name', required:false },
-        { id: 'lastName',  type: 'last-name', required:false }
+        { id: 'email',      type: 'email',      required:false },
+        { id: 'first_name', type: 'first-name', required:false },
+        { id: 'last_name',  type: 'last-name',  required:false }
       ],
     },
 
@@ -132,6 +156,7 @@ const onlineMarketplace = new OnlineMarketplace({
       name: "password",
       description: "update user password",
       login: true, // login is required
+      verbose: true, /* show errors when attempting to communicate */
       method: 'post',
       path: '/password',
       data: [
@@ -142,10 +167,12 @@ const onlineMarketplace = new OnlineMarketplace({
 
   ],
 
-  baseStateModel: {
+  /* pass any/all variables you may need at run-time */
+  model: {
     title: `Fantasy Marketplace`,
     description: `Online Marketplace`,
     author: `Captain Fantasy <fantasyui.com@gmail.com> (http://fantasyui.com)`,
+    program: pkg.name,
     version: pkg.version,
     license: pkg.license,
   }

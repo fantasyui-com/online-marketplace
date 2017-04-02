@@ -1,7 +1,5 @@
 const express = require("hardened-express");
-const requestValidator = function(req, res, next){
 
-}
 const clientSessions = require("client-sessions");
 const body = require("body-parser");
 
@@ -18,7 +16,7 @@ class OnlineMarketplace {
 
   constructor(configuration) {
 
-    let defaults = { };
+    let defaults = {};
     this.options = Object.assign({}, defaults, configuration);
 
     // ENHANCE PROGRAM METADATA BASED ON CONFIGURATION
@@ -38,9 +36,12 @@ class OnlineMarketplace {
 
   async model (req, res, next) {
 
+    // ATTACH USER MANAGER
+    req.userManager = userManager;
+
         req.state = {};
 
-        req.state.model = this.options.baseStateModel;
+        req.state.model = this.options.model;
         req.state.link = this.options.links;
 
         // by default model user is null.
@@ -65,7 +66,7 @@ class OnlineMarketplace {
 
           } catch(err) {
 
-            console.log(err)
+            // console.log(err)
             req.state.command.sessionStateReset()
             res.redirect('/');
           }
@@ -85,30 +86,40 @@ class OnlineMarketplace {
     let IS_OK = false;
 
     if(type === 'username'){
-
+      isEmpty
+      if( validator.isEmpty(value) ) return INVALID;
       if( value.match(/[^a-z0-9-]/) ) return INVALID;
-
+      if( value.length < 5 ) return INVALID;
       return IS_OK;
 
     } else if(type === 'password'){
-
+      if( validator.isEmpty(value) ) return INVALID;
+      if( validator.isEmail(value) ) return INVALID; // password can't be email, sorry.
       if( value.length < 10 ) return INVALID;
       if( zxcvbn(value).score < 3 ) return INVALID;
       return IS_OK;
 
     } else if(type === 'first-name'){
+      if( validator.isEmpty(value) ) return INVALID;
       if( value.length < 2 ) return INVALID;
       if( !validator.isAlpha(value) ) return INVALID;
       return IS_OK;
 
     } else if(type === 'last-name'){
+      if( validator.isEmpty(value) ) return INVALID;
       if( value.length < 2 ) return INVALID;
       if( !validator.isAlpha(value) ) return INVALID;
       return IS_OK;
 
     } else if(type === 'email'){
-
+      if( validator.isEmpty(value) ) return INVALID;
       if( !validator.isEmail(value) ) return INVALID;
+      return IS_OK;
+
+    } else if(type === 'text'){
+      if( validator.isEmpty(value) ) return INVALID;
+      if( !validator.isAscii(value) ) return INVALID;
+      if( value.match(/[<>=]/) ) return INVALID;
       return IS_OK;
 
     }else{
@@ -133,6 +144,7 @@ class OnlineMarketplace {
     const urlencodedParser = body.urlencoded({ extended: true });
 
     const validUserIsRequired =  async (req, res, next) => {
+
       if(!req.state.model.user){
         return res.redirect(this.options.links.login);
       }
@@ -141,6 +153,7 @@ class OnlineMarketplace {
       if(!exists){
         return res.redirect(this.options.links.login);
       }
+
       next();
     }
 
@@ -148,35 +161,38 @@ class OnlineMarketplace {
 
     app.use( await this.model.bind(this) );
 
-
-
     this.options.structure.forEach( device => {
       const args = [device.path];
       if(device.method === 'post') args.push ( urlencodedParser ) ;
       if(device.login) args.push ( validUserIsRequired ) ;
       args.push ( (req, res, next) => {
+
         const errors = [];
         let input;
         if(device.method === 'get') input = req.query;
         if(device.method === 'post') input = req.body;
+
         // whitelisted stuff
         if( device.data ){
           device.data.forEach(item=>{
             if(input[item.id]){
               if( this.isInvalid(item.type, input[item.id]) ){
-                errors.push(`${device.method}:/${device.path}/${item.id} is invalid.`)
+                // errors.push(`${device.method}:/${device.path}/${item.id} is invalid.`)
+                errors.push(`Invalid ${item.id.replace(/[^a-zA-Z0-9]/,' ')}`)
               }else{
                 // perfect!
               }
             }else{
               if(item.required){
-                errors.push(`${device.method}:/${device.path}/${item.id} is required.`)
+                // errors.push(`${device.method}:/${device.path}/${item.id} is required.`)
+                errors.push(`${capitalize(item.id)} is required`)
               }else{
                 // item is missing, but it is not required.
               }
             }
           });
         }
+
         // eveything else is blacklisted.
         Object.keys(input).forEach(item=>{
           if(device.dataSet && device.dataSet.has(item)){
@@ -187,7 +203,13 @@ class OnlineMarketplace {
         });
 
         if(errors.length){
-          return next( new Error(errors.join(', ')) );
+
+          let msg = `The following error${errors.length>1?'s':''} occured during the processing of your request: ${errors.join(', ')}. Please correct ${errors.length>1?'them':'it'} and try again. If you feel you received this message in error, please contact support.`;
+          if(1||device.verbose){
+            return next( new Error(msg) );
+          }else{
+            return res.redirect(this.options.links.home);
+          }
         }else{
           next();
         }
@@ -198,311 +220,36 @@ class OnlineMarketplace {
 
 
 
-
-
-
-
-
-        // let routeDefinition = {
-        //   path: '/legal',
-        //   form: [
-        //     {name:'', type:'', optional:true}
-        //   ]
-        //
-        // };
-        // requestValidator( app, routeDefinition )
-
-
-
     app.get("/", (req, res) => {
       res.render("index", req.state );
     });
 
-    app.get(this.options.links.legal, (req, res) => {
-      res.render("legal", req.state );
+    let routeInstaller = [];
+    this.options.structure.forEach(async device => {
+      routeInstaller.push(new Promise(async (resolve, reject) => {
+        const args = [device.path];
+        if(device.method === 'post') args.push ( urlencodedParser ) ;
+        if(device.login) args.push ( validUserIsRequired ) ;
+        let filename = `./api/${device.name}.js`;
+        let configurator = require(filename);
+        let thing = await configurator.bind(this)({options:device});
+        args.push( thing );
+        // console.log(`${device.method}: Mounting ${filename} on ${device.path}`)
+        app[device.method].apply(app, args );
+        resolve();
+      }))
     });
+    await Promise.all( routeInstaller );
 
-    app.get(this.options.links.about, (req, res) => {
-      res.render("about", req.state );
-    });
-
-    app.get(this.options.links.products, (req, res) => {
-      res.render("browse", req.state );
-    });
-
-    app.get(this.options.links.user, validUserIsRequired, (req, res) => {
-      res.render("user", req.state );
-    });
-
-    app.post(this.options.links.support, urlencodedParser, validUserIsRequired, async (req, res) => {
-      const _id = req.state.model.user._id;
-      let updateData = {};
-
-      // NOTE: This is tainted and requires validation.
-
-      const supportSubject = req.body.subject;
-      const supportMessage = req.body.message;
-
-      // TODO: send message...
-
-
-      res.redirect(this.options.links.user);
-
-    });
-
-
-    app.post(this.options.links.update, urlencodedParser, validUserIsRequired, async (req, res) => {
-      const _id = req.state.model.user._id;
-      let updateData = {};
-
-      // NOTE: This is tainted and requires validation.
-      const newEmail = req.body.new_email;
-      if(newEmail){
-        if( this.isInvalid('email', newEmail) ){
-          return res.render("error", Object.assign({}, req.state, {message: 'Invalid Email Address'} ));
-        }
-        updateData.email = newEmail;
-      }
-
-      // NOTE: This is tainted and requires validation.
-      const newFirstName = req.body.new_first_name;
-      if(newFirstName){
-        if( this.isInvalid('first-name', newFirstName) ){
-          return res.render("error", Object.assign({}, req.state, {message: 'Invalid First Name'} ));
-        }
-        updateData.firstName = newFirstName;
-      }
-
-      // NOTE: This is tainted and requires validation.
-      const newLastName = req.body.new_last_name;
-      if(newLastName){
-        if( this.isInvalid('last-name', newLastName) ){
-          return res.render("error", Object.assign({}, req.state, {message: 'Invalid Last Name'} ));
-        }
-        updateData.lastName = newLastName;
-      }
-
-      // << HEY! GOT MORE FIELDS?, ADD THEM HERE... >>
-
-      const changesNeedToBeMade = (Object.keys(updateData).length > 0);
-
-      if(changesNeedToBeMade){
-        let user = await userManager.userGet(_id);
-
-        const things = [];
-        Object.keys(updateData).forEach(key=>{
-          let val = updateData[key];
-          if(updateData[key] !== user[key]){
-            things.push( kebabCase(key).replace(/-/,' ') );
-          }
-        });
-
-        if(things.length){
-          user.notes.push( `${new Date()}: Updated ${things.join(', ')}.` );
-        }
-        Object.assign(user, updateData);
-        await userManager.userMod(_id, user);
-
-      }
-
-      res.redirect(this.options.links.user);
-
-    });
-
-
-    app.post(this.options.links.password, urlencodedParser, validUserIsRequired, async (req, res) => {
-      const _id = req.state.model.user._id;
-      let updateData = {};
-
-      // This is tainted and requires validation.
-      const newPassword = req.body.new_password;
-      if(newPassword){
-        if( this.isInvalid('password', newPassword) ){
-          return res.render("error", Object.assign({}, req.state, {message: 'New password is too weak or invalid.'} ));
-        }
-      }else{
-        // no password, no change.
-        return res.redirect(this.options.links.user);
-      }
-
-      const oldPassword = req.body.old_password;
-      // NOTE: oldPassword is tainted but does not require string validation it self, we are trying to get rid of it.
-      if(!oldPassword){
-        return res.render("error", Object.assign({}, req.state, {message: 'Password is required to update this information.'} ));
-      }
-
-      const changesNeedToBeMade = (newPassword);
-
-      if(changesNeedToBeMade){ // there are changes
-        let user = await userManager.userGet(_id);
-        if(user.password === oldPassword){
-          user.notes.push( `${new Date()}: Changed password.` );
-          user.password = newPassword;
-          Object.assign(user, updateData);
-          await userManager.userMod(_id, user);
-          res.redirect(this.options.links.user);
-        } else {
-          return res.render("error", Object.assign({}, req.state, {message: 'The password you entered was invalid and no changes have been made to the account.'} ));
-        }
-        // NOTE: These changes do not require user's password.
-        await userManager.userMod(_id, updateData);
-       } // there are changes
-
-      res.redirect(this.options.links.user);
-
-    });
-
-
-
-
-
-
-
-
-    app.get(this.options.links.login, (req, res) => {
-      if(req.state.model.user){
-        // NOTE: if user is logged in they are not allowed to access the login page until they log-out.
-        return res.redirect(this.options.links.user);
-      }
-      res.render("login", req.state )
-    });
-
-    app.post(this.options.links.authenticate, urlencodedParser, async (req, res) => {
-
-      let username = req.body.username;
-      let password = req.body.password;
-
-      // NOTE: the following means malformed username and not not necessarily no user, security only benefits from this.
-      if( this.isInvalid('username', username) ){
-        return res.render("error", Object.assign({}, req.state, {message: 'Invalid Username'} ));
-      }
-
-      // NOTE: this means that if user somehow got a bad password into the db, they will not be able to login
-      if( this.isInvalid('password', password) ){
-        return res.render("error", Object.assign({}, req.state, {message: 'Invalid Password'} ));
-      }
-
-      let exists = await userManager.userExists(username);
-      // NOTE: note the early exit.
-      if(!exists){
-        return res.render("error", Object.assign({}, req.state, {message: 'Invalid Username'} ));
-      }
-
-      let user = await userManager.userGet(username);
-      // NOTE: note the early exit.
-      if(user.password !== password){
-        return res.render("error", Object.assign({}, req.state, {message: 'Invalid Password'} ));
-      }
-
-      // yay they made it! user is valid, gets the session setup
-      req[this.options.clientSessionsCookieName].username = username;
-
-      // log the activity
-      user.notes.push( `${new Date()}: Login` );
-      await userManager.userMod(username, user);
-
-      // and redirect to home page.
-      return res.redirect(this.options.links.user);
-
-    });
-
-
-
-    app.get(this.options.links.signup, (req, res) => { res.render("signup", req.state ) });
-
-    app.post(this.options.links.signup, urlencodedParser, async (req, res) => {
-
-      let username = req.body.username;
-      let password = req.body.password;
-
-      if( this.isInvalid('username', username) ){
-        return res.render("error", Object.assign({}, req.state, {message: 'Invalid Username'} ));
-      }
-
-      if( this.isInvalid('password', password) ){
-        return res.render("error", Object.assign({}, req.state, {message: 'Invalid Password'} ));
-      }
-
-      try {
-
-        // NOTE: due to race conditions we can only know if the userManager.userAdd was a success.
-        // userManager.userAdd will throw if username already exists.
-
-        await userManager.userAdd(username, {password, notes:[`${new Date()}: Account Creation`]});
-
-        // NOTE: even though it it spossible to set req[this.options.clientSessionsCookieName].username right here, we don't do that.
-        // there will be just one place where that value is assigned, the login page.
-        // DONOT: req[this.options.clientSessionsCookieName].username = username;
-
-      } catch(err){
-
-        if(err.message.startsWith('OBJECT_ALREADY_EXISTS') ){
-          return res.render("error", Object.assign({}, req.state, {message: 'Username is taken, try again.'} ));
-        }
-
-        throw err;
-      }
-
-      // redirect to user to login page.
-      res.redirect(this.options.links.login);
-
-    });
-
-
-
-    app.get(this.options.links.logout, function (req, res) {
-      req.state.command.sessionStateReset()
+    app.get('*',function (req, res) {
       res.redirect('/');
     });
-
-    app.get(this.options.links.confirm, validUserIsRequired, async (req, res) => {
-
-      if(req.state.model.user && (req.state.model.user.email !== req.state.model.user.confirmed)){
-        // NOTE: email is already confirmed send the user home
-        return res.redirect(this.options.links.user);
-      }
-
-      if(req.query.code){
-
-        let codeIsValid = false;
-        let userHashValid = false;
-
-        if(codeIsValid && userHashValid){ // checks if the confirmation is for the current email
-          await userManager.userMod(_id, {confirmed:req.state.model.user.email});
-          return res.redirect(this.options.links.user);
-        }
-
-      }
-
-      res.render("confirm", req.state);
-
-    });
-
-    app.post(this.options.links.confirm, urlencodedParser, validUserIsRequired, async (req, res) => {
-
-      if(req.state.model.user && (req.state.model.user.email !== req.state.model.user.confirmed)){
-        // NOTE: email is already confirmed send the user home
-        return res.redirect(this.options.links.user);
-      }
-
-      let codeIsValid = false;
-      let userHashValid = false;
-
-      if(codeIsValid && userHashValid){ // checks if the confirmation is for the current email
-        await userManager.userMod(_id, {confirmed:req.state.model.user.email});
-      }
-
-      return res.redirect(this.options.links.user);
-
-    });
-
     app.use(function (err, req, res, next) {
       res.render("error", Object.assign({}, req.state, {message: err.message} ));
       res.status(500);
-    })
-
-    this.app.listen(this.options.serverPort, this.options.serverHostname, () => {
-      console.log(`Server running at http://${this.options.serverHostname}:${this.options.serverPort}/`);
+    });
+    this.app.listen(this.options.port, this.options.host, () => {
+      console.log(`http://${this.options.host}:${this.options.port}/`);
       if (process.send) process.send('ready');
     });
 

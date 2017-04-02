@@ -1,21 +1,27 @@
 
-<footer class="bg-inverse text-white mt-3 mb-0">
+<footer class="bg-inverse text-muted mt-3 mb-0">
   <div class="container-fluid">
     <div class="row">
-      <div class="col">
-        <ul class="p-3">
-          <li><a class="btn btn-sm btn-link" href="https://github.com/fantasyui-com">GitHub</a></li>
-          <li><a class="btn btn-sm btn-link" href="https://twitter.com/fantasyui_com">Twitter</a></li>
-          <li><a class="btn btn-sm btn-link" href="https://creativemarket.com/fantasyui.com/">Creativemarket</a></li>
-          <li><a class="btn btn-sm btn-link" href="/about">About</a></li>
-          <li><a class="btn btn-sm btn-link" href="/legal">Legal</a></li>
+
+      <div class="col-xs-3 col-md-4 col-lg-3 p-3">
+        <ul class="p-3 list-unstyled">
+          <li><i class="fa fa-fw fa-code"></i><a class="btn btn-sm btn-link" href="https://github.com/fantasyui-com">GitHub</a></li>
+          <li><i class="fa fa-fw fa-code"></i><a class="btn btn-sm btn-link" href="https://twitter.com/fantasyui_com">Twitter</a></li>
+          <li><i class="fa fa-fw fa-code"></i><a class="btn btn-sm btn-link" href="https://creativemarket.com/fantasyui.com/">Creativemarket</a></li>
+          <li><i class="fa fa-fw fa-code"></i><a class="btn btn-sm btn-link" href="/about">About</a></li>
+          <li><i class="fa fa-fw fa-code"></i><a class="btn btn-sm btn-link" href="/legal">Legal</a></li>
         </ul>
-        <p class="small">Designed and built with all the might in the world by <a href="https://github.com/fantasyui-com" target="_blank">Captain Fantasy</a> and <a href="http://fantasyui.com" target="_blank">fantasyui.com</a>. Maintained at <a href="https://github.com/fantasyui-com/online-marketplace">fantasyui-com/online-marketplace</a> with the help of <a href="https://github.com/fantasyui-com/online-marketplace/graphs/contributors">our contributors</a>.</p>
-        <p class="small text-info">Currently <%= model.version %>. Code licensed <a rel="license" href="https://github.com/fantasyui-com/online-marketplace/blob/master/LICENSE" target="_blank"><%= model.license %></a>, docs <a rel="license" href="https://creativecommons.org/licenses/by/3.0/" target="_blank">CC BY 3.0</a>.</p>
       </div>
+
+      <div class="col p-3">
+        <p class="small p-3">Designed and built with all the might in the world by <a class="text-warning" href="https://github.com/fantasyui-com" target="_blank">Captain Fantasy</a> and <a class="text-warning" href="http://fantasyui.com" target="_blank">fantasyui.com</a>. Maintained at <a class="text-warning" href="https://github.com/fantasyui-com/online-marketplace">fantasyui-com/online-marketplace</a> with the help of <a class="text-warning" href="https://github.com/fantasyui-com/online-marketplace/graphs/contributors">our contributors</a>.</p>
+        <p class="small p-3">Code behind <%= model.program %> is currently at <%= model.version %>. Code licensed <a rel="license" class="text-warning" href="https://github.com/fantasyui-com/online-marketplace/blob/master/LICENSE" target="_blank"><%= model.license %></a>, docs <a rel="license" class="text-warning" href="https://creativecommons.org/licenses/by/3.0/" target="_blank">CC BY 3.0</a>.</p>
+      </div>
+
     </div>
   </div>
 </footer>
 <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">

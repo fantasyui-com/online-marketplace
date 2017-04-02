@@ -3,8 +3,11 @@ Simple online marketplace for selling files.
 
 ## Points and Features
 
-- Multiprocess Safe
-- Distributed Client-side Session Data
+- Multiprocess Safe.
+- Keep Database needs to minimum.
+- Distributed client-side session data.
+
+- Responsive User Interface, this means, mobile first, desktop second.
 
 
 ## Deployment
