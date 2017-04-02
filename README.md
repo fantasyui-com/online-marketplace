@@ -7,7 +7,7 @@ Simple online marketplace for selling files.
 
 - No valuable information on the server.
 - Validate HTTP request and data via key-whitelist and string-validation.
-- Validate HTML variable output via simple-template-engine and pre-decaled XSS-filtered output.
+- Validate HTML variable output via simple-template-engine and pre-declared XSS-filtered output.
 - Secure whitelisted-input forms via hash key in the form.
 - Autorotate any needed secret-keys to prevent 'put your secret key here' secrets.
 
@@ -64,7 +64,7 @@ so that user will get their file, without signing up via the site.
 
 ### Membership Mode
 
-This allows the user to purchase a monthly/yearly membership and gain user to all files on the site. This is the true
+This allows the user to purchase a monthly/yearly membership and gain access to all member-files on the site. This is the true
 nature of this application. In this situation we employ the Stripe Membership pattern, we still keep information down
 to minimum. In membership mode the user only shares their email address and list of downloads becomes "your favorites".
 
@@ -75,15 +75,17 @@ how the testing will progress.
 
 ## Key Points and Features
 
-Multiprocess Safe.
+Multiprocess Safe (pm2 will spawn one server.js process per CPU core)
 
-Keep Database needs to minimum.
+Keep Database needs to minimum, allow rollbacks.
 
-Distributed client-side session data.
+Client-side session data with auto-rotating encryption keys.
 
 ## UI Theory
 
-Responsive User Interface. Meaning, mobile first, desktop second; what works on small mobile screens must spread out to fill a large desktop.
+Responsive User Interface.
+
+Mobile first, desktop second; what works on small mobile screens must spread out to fill a large desktop.
 
 ## Deployment
 
