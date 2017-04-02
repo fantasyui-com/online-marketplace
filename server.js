@@ -12,6 +12,39 @@ const onlineMarketplace = new OnlineMarketplace({
   /* Strict Structure Declaration */
 
   structure: [
+    {
+      method: 'get',
+      path: "/",
+      name: "home",
+      view: 'index',
+      data: [],
+
+      values: [
+        { id: 'isLoggedIn' },
+        { id: 'username' },
+
+        { id: 'featuredProducts' },
+        { id: 'popularProducts' },
+
+      ]
+
+    },
+
+    {
+      name: "about",
+      method: 'get',
+      view: 'about',
+      path: "/about",
+      data: [],
+      values: [
+        { id: 'isLoggedIn' },
+      ]
+    },
+
+
+  ],
+
+  old_structure: [
 
     /* NOTE:
       Please be mindfull of endles loops of redirects from home -> home,
@@ -30,7 +63,9 @@ const onlineMarketplace = new OnlineMarketplace({
       method: 'get',
       view: 'about',
       path: "/about",
-      data: [{ id: 'test', type: 'email', required:false }],
+
+      data: [{ id: 'test', type: 'email', required:false }], /* will bounce you to "/" unless test=valid@email.address */
+
     },
 
     {
@@ -55,7 +90,22 @@ const onlineMarketplace = new OnlineMarketplace({
       method: 'get',
       view: "user",
       path: "/home",
-      data: []
+
+      data: [],
+
+      values: [ /* Only these values will be made available to the view */
+
+        { id: 'username',  },
+        { id: 'userid',        },
+        { id: 'email',     },
+        { id: 'firstname', },
+        { id: 'lastname',  },
+
+        { id: 'purchasedItems' },
+        { id: 'recentActivity' },
+        { id: 'accountActions' },
+
+      ]
     },
 
     {
@@ -170,11 +220,12 @@ const onlineMarketplace = new OnlineMarketplace({
   /* pass any/all variables you may need at run-time */
   model: {
     title: `Fantasy Marketplace`,
-    description: `Online Marketplace`,
-    author: `Captain Fantasy <fantasyui.com@gmail.com> (http://fantasyui.com)`,
+    description: `A Fantastic Online Marketplace: Build amazing things, join the sustainable lightweight design revolution.`,
+    author:  pkg.author,
     program: pkg.name,
     version: pkg.version,
     license: pkg.license,
+
   }
 });
 onlineMarketplace.listen();

@@ -96,3 +96,10 @@ Mobile first, desktop second; what works on small mobile screens must spread out
 
 Clone/Fork this repo, install supervisor ```npm install supervisor -g```
 and run ```supervisor --extensions 'node,js,ejs' server.js```
+
+
+## Supplemental
+
+- Replaced the lovely EJS with the less flexible, more strict, and wooden HBS.
+- Added XSS protection to every instance of variable use.
+- Removed target="_blank", from everywhere due to security issues with window.opener.

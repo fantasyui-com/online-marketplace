@@ -11,6 +11,14 @@ const zxcvbn = require('zxcvbn');
 const capitalize = require('lodash/capitalize');
 const kebabCase = require('lodash/kebabCase');
 
+const xssFilters = require('xss-filters');
+
+var hbs = require('hbs');
+hbs.registerPartials(__dirname + '/views/partials');
+hbs.registerHelper('inHTMLData', function(str) { return xssFilters.inHTMLData(str); });
+hbs.registerHelper('inSingleQuotedAttr', function(str) { return xssFilters.inSingleQuotedAttr(str); });
+hbs.registerHelper('inDoubleQuotedAttr', function(str) { return xssFilters.inDoubleQuotedAttr(str); });
+hbs.registerHelper('inUnQuotedAttr', function(str) { return xssFilters.inUnQuotedAttr(str); });
 
 class OnlineMarketplace {
 
@@ -21,9 +29,11 @@ class OnlineMarketplace {
 
     // ENHANCE PROGRAM METADATA BASED ON CONFIGURATION
     // create data lookup set for blacklisting;
+
     this.options.structure.forEach(device => {
       device.dataSet = new Set( device.data.map(i=>i.id) ); // create a set from id/s
     });
+
     // create easy links (fun for ejs)
     this.options.links = {};
     this.options.structure.forEach(device => {
@@ -34,59 +44,72 @@ class OnlineMarketplace {
 
    }
 
-  async model (req, res, next) {
+   // value producer for values.
 
-    // ATTACH USER MANAGER
-    req.userManager = userManager;
 
-        req.state = {};
+   async getValue({req, id, filter}){
 
-        req.state.model = this.options.model;
-        req.state.link = this.options.links;
+     // Default response.
+     let response = null;
 
-        // by default model user is null.
-        req.state.model.user = null; // no user
-        req.state.model.activity = []; // no activity
-        req.state.model.actions = []; // no actions to be undertaken
+     if(0){
 
-        req.state.command = {};
+     } else if(id === 'isLoggedIn'){
+       response = !!( req.userObject );
 
-        req.state.command.sessionStateReset = () => {
-          req[this.options.clientSessionsCookieName].reset();
-        };
+     } else if(id === 'username'){
+       if(req.userObject && req.userObject._id){
+         response =  req.userObject._id
+       }
 
-        if( req[this.options.clientSessionsCookieName] && req[this.options.clientSessionsCookieName].username ){
+     } else if(id === 'email'){
+       if(req.userObject && req.userObject.email){
+         response =  req.userObject.email
+       }
 
-          try {
+     } else if((id === 'popularProducts')||(id === 'featuredProducts')||(id === 'purchasedItems')){
+       response = [];
+       for(let x=0; x<6; x++){
+         let product = {
 
-            let user = await userManager.userGet(req[this.options.clientSessionsCookieName].username);
-            // NOTE: model.user is only set when serManager.userGet is a success.
-            req.state.model.user = user;
-            req.state.model.activity = user.notes;
+           /* NOTE: Custom Fields */
+           "title": `Theme #${x}`,
+           "link": `fantasyui-com/theme-number${x}`,
+           "price": `12.00`,
 
-          } catch(err) {
+           /* NOTE: Standard Fields */
+           "name": `theme-number${x}`,
+           "version": "1.0.13",
+           "description": "Simple online marketplace for selling files.",
+           "keywords": [],
+           "author": "Captain Fantasy <fantasyui.com@gmail.com> (http://fantasyui.com)",
+           "license": "Standard Closed License",
+           "bugs": {
+             "url": "https://github.com/fantasyui-com/online-marketplace/issues"
+           },
+           "homepage": "https://github.com/fantasyui-com/online-marketplace#readme",
+           "dependencies": {}
+         };
 
-            // console.log(err)
-            req.state.command.sessionStateReset()
-            res.redirect('/');
-          }
 
-          next();
+         response.push(product);
+       }
 
-        }else{
 
-          next();
+     } else {
+       throw new Error('Unknown value id');
+     }
 
-        }
+     return response;
+   }
 
-    }
+
 
   isInvalid( type, value ){
     let INVALID = true;
     let IS_OK = false;
 
     if(type === 'username'){
-      isEmpty
       if( validator.isEmpty(value) ) return INVALID;
       if( value.match(/[^a-z0-9-]/) ) return INVALID;
       if( value.length < 5 ) return INVALID;
@@ -144,7 +167,6 @@ class OnlineMarketplace {
     const urlencodedParser = body.urlencoded({ extended: true });
 
     const validUserIsRequired =  async (req, res, next) => {
-
       if(!req.state.model.user){
         return res.redirect(this.options.links.login);
       }
@@ -157,9 +179,9 @@ class OnlineMarketplace {
       next();
     }
 
-    app.set("view engine", "ejs");
+    app.set("view engine", "hbs");
 
-    app.use( await this.model.bind(this) );
+    //app.use( await this.model.bind(this) );
 
     this.options.structure.forEach( device => {
       const args = [device.path];
@@ -219,31 +241,83 @@ class OnlineMarketplace {
 
 
 
-
-    app.get("/", (req, res) => {
-      res.render("index", req.state );
-    });
-
     let routeInstaller = [];
     this.options.structure.forEach(async device => {
       routeInstaller.push(new Promise(async (resolve, reject) => {
+
         const args = [device.path];
+
         if(device.method === 'post') args.push ( urlencodedParser ) ;
         if(device.login) args.push ( validUserIsRequired ) ;
+
+        args.push ( async (req, res, next) => {
+          req.userManager = userManager;
+          req.userObject = null;
+
+          req.sessionStateReset = () => {
+            req[this.options.clientSessionsCookieName].reset();
+          };
+
+          if( req[this.options.clientSessionsCookieName] && req[this.options.clientSessionsCookieName].username ){
+              try {
+                let user = await userManager.userGet(req[this.options.clientSessionsCookieName].username);
+                // NOTE: model.user is only set when serManager.userGet is a success.
+                req.userObject = user;
+              } catch(err) {
+                // there was a cooke, but user caused an error, remove cookie.
+                req.sessionStateReset()
+                res.redirect('/');
+              }
+              next();
+            }else{
+              next();
+            }
+          });
+
+
+
+        args.push ( async (req, res, next) => {
+          req.state = Object.assign({title:'?'}, this.options.model);
+          req.state.link  = this.options.links;
+          if(device.values){
+            // scan list of values....
+            const valuePromises = [];
+            device.values.forEach(async valueObject => {
+              valuePromises.push(new Promise(async (resolve, reject) => {
+                // and fetch that value, assigning it to state.
+                req.state[ valueObject.id ] = await this.getValue(Object.assign({},valueObject,{req}));
+                resolve();
+              }));
+            });
+            await Promise.all( valuePromises );
+          }
+          next();
+        });
+
         let filename = `./api/${device.name}.js`;
         let configurator = require(filename);
         let thing = await configurator.bind(this)({options:device});
+
         args.push( thing );
-        // console.log(`${device.method}: Mounting ${filename} on ${device.path}`)
-        app[device.method].apply(app, args );
+
+         console.log(`${device.method}: Mounting ${filename} on ${device.path}`)
+
+        app[device.method].apply( app, args );
+
         resolve();
       }))
     });
     await Promise.all( routeInstaller );
 
+    // app.get("/", (req, res) => {
+    //   res.render("index", req.state );
+    // });
+    //
+
     app.get('*',function (req, res) {
       res.redirect('/');
     });
+
     app.use(function (err, req, res, next) {
       res.render("error", Object.assign({}, req.state, {message: err.message} ));
       res.status(500);

@@ -2,7 +2,7 @@ module.exports = async function({options}){
 
   return async (req, res) => {
 
-    req.state.command.sessionStateReset()
+    req.sessionStateReset()
     res.redirect('/');
 
   }
