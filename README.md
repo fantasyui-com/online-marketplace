@@ -54,7 +54,7 @@ The server configuration file is easy to read, but the system will eventually ha
 
 #### 6. Limited Data Exposure
 
-The only ```required``` piece of information is password which is encrypted.
+The only ```required``` piece of information is password which is encrypted with bcrypt.
 
 The ```optional``` sensitive data kept on the server is email, first name, last name.
 

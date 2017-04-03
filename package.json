@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/fantasyui-com/online-marketplace#readme",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.17.1",
     "client-sessions": "^0.7.0",
     "cookie-parser": "^1.4.3",

@@ -1,10 +1,12 @@
+const bcrypt = require('bcryptjs');
+
 module.exports = async function({options}){
 
   return async (req, res) => {
 
     /// NOTE: NETSEC: these have already been validated by the security middleware.
-    let username = req.body.username;
-    let password = req.body.password;
+    const username = req.body.username;
+    const password = req.body.password;
 
     let exists = await req.userManager.userExists(username);
     // NOTE: note the early exit if user does not exist.
@@ -14,7 +16,8 @@ module.exports = async function({options}){
 
     let user = await req.userManager.userGet(username);
     // NOTE: note the early exit.
-    if(user.password !== password){
+
+    if( ! bcrypt.compareSync( password, user.password ) ){
       return res.render("error", Object.assign({}, req.state, {message: 'Invalid Password'} ));
     }
 

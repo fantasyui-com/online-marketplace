@@ -1,10 +1,14 @@
+const bcrypt = require('bcryptjs');
+
 module.exports = async function({options}){
 
   return async (req, res) => {
 
     // NOTE: NETSEC: these have already been validated by the security middleware.
-    let username = req.body.username;
-    let password = req.body.password;
+
+    const username = req.body.username;
+    const salt = bcrypt.genSaltSync(10);
+    const password = bcrypt.hashSync(req.body.password, salt);
 
     try {
 
