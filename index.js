@@ -301,6 +301,7 @@ class OnlineMarketplace {
             }else{
               let saferName = item.replace(/[^a-zA-Z0-9]/,'_');
               saferName = xssFilters.inHTMLData(saferName);
+              errors.push(`${saferName} is not allowed.`)
             }
 
           }
