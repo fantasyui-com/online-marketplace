@@ -10,11 +10,13 @@ const validator = require('validator');
 const zxcvbn = require('zxcvbn');
 const capitalize = require('lodash/capitalize');
 const kebabCase = require('lodash/kebabCase');
+const camelCase = require('lodash/camelCase');
 
 const xssFilters = require('xss-filters');
 
 var hbs = require('hbs');
 hbs.registerPartials(__dirname + '/views/partials');
+hbs.registerPartials(__dirname + '/views/cards');
 hbs.registerHelper('inHTMLData', function(str) { return xssFilters.inHTMLData(str); });
 hbs.registerHelper('inSingleQuotedAttr', function(str) { return xssFilters.inSingleQuotedAttr(str); });
 hbs.registerHelper('inDoubleQuotedAttr', function(str) { return xssFilters.inDoubleQuotedAttr(str); });
@@ -37,7 +39,9 @@ class OnlineMarketplace {
     // create easy links (fun for ejs)
     this.options.links = {};
     this.options.structure.forEach(device => {
-      this.options.links[device.name] = device.path;
+
+      this.options.links[camelCase(device.name)] = device.path;
+
     });
 
     this.app = express();
@@ -67,7 +71,51 @@ class OnlineMarketplace {
          response =  req.userObject.email
        }
 
-     } else if((id === 'popularProducts')||(id === 'featuredProducts')||(id === 'purchasedItems')){
+     } else if(id === 'firstName'){
+       if(req.userObject && req.userObject.firstName){
+         response =  req.userObject.firstName
+       }
+
+     } else if(id === 'lastName'){
+       if(req.userObject && req.userObject.lastName){
+         response =  req.userObject.lastName
+       }
+
+     } else if(id === 'accountActions'){
+       if(req.userObject){
+
+         response = [];
+
+         response.push({
+           type: "info",
+           title:"Whoo hoo!",
+           description:'Now we just need you to grab first product, we\'ll keep track of it for you.',
+           text:'Browse Products',
+           link:this.options.links.products,
+         });
+
+         response.push({
+           type: "warning",
+           title:"Security!",
+           description:'It has been 90 days since you changed your password.',
+           text:'Update Password',
+           link:'#action-update-password',
+         })
+
+       }
+
+     } else if(id === 'recentActivity'){
+       if(req.userObject && req.userObject.notes){
+         response = req.userObject.notes.slice(-7).map(i=>({note:i}));
+       }
+
+
+     } else if (
+       (id === 'browseProducts')||
+       (id === 'popularProducts')||
+       (id === 'featuredProducts')||
+       (id === 'purchasedItems')
+     ){
        response = [];
        for(let x=0; x<6; x++){
          let product = {
@@ -97,7 +145,7 @@ class OnlineMarketplace {
 
 
      } else {
-       throw new Error('Unknown value id');
+       throw new Error(`Unknown value id request in getValue. You must add a "${id.replace(/[^a-zA-Z0-9_-]/,'')}" reader getValue function.`);
      }
 
      return response;
@@ -167,15 +215,15 @@ class OnlineMarketplace {
     const urlencodedParser = body.urlencoded({ extended: true });
 
     const validUserIsRequired =  async (req, res, next) => {
-      if(!req.state.model.user){
+      if(!req.userObject){
         return res.redirect(this.options.links.login);
       }
-      const _id = req.state.model.user._id;
+      // Verify that the user is considered to exist.
+      const _id = req.userObject._id;
       let exists = await userManager.userExists(_id);
       if(!exists){
         return res.redirect(this.options.links.login);
       }
-
       next();
     }
 
@@ -186,6 +234,33 @@ class OnlineMarketplace {
     this.options.structure.forEach( device => {
       const args = [device.path];
       if(device.method === 'post') args.push ( urlencodedParser ) ;
+
+
+    args.push ( async (req, res, next) => {
+      req.userManager = userManager;
+      req.userObject = null;
+
+      req.sessionStateReset = () => {
+        req[this.options.clientSessionsCookieName].reset();
+      };
+
+      if( req[this.options.clientSessionsCookieName] && req[this.options.clientSessionsCookieName].username ){
+          try {
+            let user = await userManager.userGet(req[this.options.clientSessionsCookieName].username);
+            // NOTE: model.user is only set when serManager.userGet is a success.
+            req.userObject = user;
+          } catch(err) {
+            // there was a cooke, but user caused an error, remove cookie.
+            req.sessionStateReset()
+            res.redirect('/');
+          }
+          next();
+        }else{
+          next();
+        }
+      });
+
+
       if(device.login) args.push ( validUserIsRequired ) ;
       args.push ( (req, res, next) => {
 
@@ -248,31 +323,8 @@ class OnlineMarketplace {
         const args = [device.path];
 
         if(device.method === 'post') args.push ( urlencodedParser ) ;
+
         if(device.login) args.push ( validUserIsRequired ) ;
-
-        args.push ( async (req, res, next) => {
-          req.userManager = userManager;
-          req.userObject = null;
-
-          req.sessionStateReset = () => {
-            req[this.options.clientSessionsCookieName].reset();
-          };
-
-          if( req[this.options.clientSessionsCookieName] && req[this.options.clientSessionsCookieName].username ){
-              try {
-                let user = await userManager.userGet(req[this.options.clientSessionsCookieName].username);
-                // NOTE: model.user is only set when serManager.userGet is a success.
-                req.userObject = user;
-              } catch(err) {
-                // there was a cooke, but user caused an error, remove cookie.
-                req.sessionStateReset()
-                res.redirect('/');
-              }
-              next();
-            }else{
-              next();
-            }
-          });
 
 
 
@@ -294,13 +346,11 @@ class OnlineMarketplace {
           next();
         });
 
-        let filename = `./api/${device.name}.js`;
-        let configurator = require(filename);
-        let thing = await configurator.bind(this)({options:device});
+        let routeInstaller = require(device.module).bind(this);
+        let deviceRoute = await routeInstaller({options:device});
+        args.push( deviceRoute );
 
-        args.push( thing );
-
-         console.log(`${device.method}: Mounting ${filename} on ${device.path}`)
+         //c-onsole.log(`${device.method}: Mounting ${device.module} on ${device.path}`)
 
         app[device.method].apply( app, args );
 
@@ -322,6 +372,7 @@ class OnlineMarketplace {
       res.render("error", Object.assign({}, req.state, {message: err.message} ));
       res.status(500);
     });
+
     this.app.listen(this.options.port, this.options.host, () => {
       console.log(`http://${this.options.host}:${this.options.port}/`);
       if (process.send) process.send('ready');

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+{{> htmlHead}}
+<body>
+{{> header}}
+{{> navigation }}
+
+{{> subtitle title="Products" text="Each product perfectly crafted by a dedicated core process."}}
+
+<div class="container py-3">
+  <div class="row">
+    {{#each browseProducts}}
+      <div class="col-md-4 p-3">
+        {{> productCard}}
+      </div>
+    {{~/each}}
+  </div>
+</div>
+
+{{> footer}}
+{{> htmlFoot}}
+</body>
+</html>

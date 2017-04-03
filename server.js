@@ -11,27 +11,30 @@ const onlineMarketplace = new OnlineMarketplace({
 
   /* Strict Structure Declaration */
 
+  /* NOTE:
+    Please be mindfull of endles loops of redirects from home -> home,
+    due to rules you may set below place as little demand on the home page as possible.
+  */
+
   structure: [
     {
+      name: "home",
+      module: "./api/render.js",
       method: 'get',
       path: "/",
-      name: "home",
       view: 'index',
       data: [],
-
       values: [
         { id: 'isLoggedIn' },
         { id: 'username' },
-
         { id: 'featuredProducts' },
         { id: 'popularProducts' },
-
       ]
-
     },
 
     {
       name: "about",
+      module: "./api/render.js",
       method: 'get',
       view: 'about',
       path: "/about",
@@ -39,67 +42,85 @@ const onlineMarketplace = new OnlineMarketplace({
       values: [
         { id: 'isLoggedIn' },
       ]
-    },
-
-
-  ],
-
-  old_structure: [
-
-    /* NOTE:
-      Please be mindfull of endles loops of redirects from home -> home,
-      due to rules you may set below place as little demand on the home page as possible.
-    */
-    {
-      name: "home",
-      method: 'get',
-      view: 'index',
-      path: "/",
-      data: [],
-    },
-
-    {
-      name: "about",
-      method: 'get',
-      view: 'about',
-      path: "/about",
-
-      data: [{ id: 'test', type: 'email', required:false }], /* will bounce you to "/" unless test=valid@email.address */
-
-    },
-
-    {
-      name: "products",
-      method: 'get',
-      view: "products",
-      path: "/products",
-      data: []
     },
 
     {
       name: "legal",
+      module: "./api/render.js",
       method: 'get',
-      view: "legal",
+      view: 'legal',
       path: "/legal",
-      data: []
+      data: [],
+      values: [
+        { id: 'isLoggedIn' },
+      ]
     },
 
     {
+      name: "products",
+      module: "./api/render.js",
+
+      method: 'get',
+      view: 'products',
+      path: "/products",
+      data: [],
+      values: [
+        { id: 'isLoggedIn' },
+        { id: 'browseProducts' },
+      ]
+    },
+
+
+    { name: "signup", module: "./api/signup/form.js", method: 'get', view: "signup", path: "/signup", data: [], values: [{id:'isLoggedIn'}]},
+    {
+      name: "signup-handler",
+      module: "./api/signup/handler.js",
+      method: 'post',
+      path: "/signup",
+      verbose: true, /* show errors when signing up */
+      data: [
+        { id: 'username', type: 'username', required:true },
+        { id: 'password', type: 'password', required:true }
+      ],
+      values: [
+        { id: 'isLoggedIn' },
+      ]
+    },
+
+    { name: "login", module: "./api/login/form.js", method: 'get', view: "login", path: "/login", data: [], values: [{id:'isLoggedIn'}]},
+    {
+      name: "login-handler",
+      module: "./api/login/handler.js",
+      method: 'post',
+      path: "/login",
+      verbose: true, /* show errors when signing up */
+      data: [
+        { id: 'username', type: 'username', required:true },
+        { id: 'password', type: 'password', required:true }
+      ],
+      values: [
+        { id: 'isLoggedIn' },
+      ]
+    },
+
+    /* Authenticated User Functions Section */
+
+    {
       name: "user",
+      module: "./api/user/home.js",
       login: true, // login is required
       method: 'get',
       view: "user",
-      path: "/home",
-
+      path: "/user",
       data: [],
-
       values: [ /* Only these values will be made available to the view */
 
+        { id: 'isLoggedIn' },
+
         { id: 'username',  },
-        { id: 'userid',        },
         { id: 'email',     },
-        { id: 'firstname', },
-        { id: 'lastname',  },
+        { id: 'firstName', },
+        { id: 'lastName',  },
 
         { id: 'purchasedItems' },
         { id: 'recentActivity' },
@@ -108,112 +129,53 @@ const onlineMarketplace = new OnlineMarketplace({
       ]
     },
 
-    {
-      name: "signup",
-      method: 'get',
-      view: "signup",
-      path: "/signup",
-      data: []
-    },
 
     {
-      name: "adduser",
-      method: 'post',
-      path: "/adduser",
-      verbose: true, /* show errors when signing up */
-      data: [
-        { id: 'username', type: 'username', required:true },
-        { id: 'password', type: 'password', required:true }
-      ]
-    },
-
-    {
-      name: "login",
-      method: 'get',
-      view: "login",
-      path: "/login",
-      data: []
-    },
-
-    {
-      name: "authenticate",
-      method: 'post',
-      path: "/authenticate",
-      data: [
-        { id: 'username', type: 'username', required:true },
-        { id: 'password', type: 'password', required:true }
-      ]
-    },
-
-    {
-      name: "logout",
-      method: 'get',
-      path: "/logout",
-      data: []
-    },
-
-    /* confirm and validate email */
-    {
-      name: "confirm",
+      name: "update-profile",
+      description: "update user profile",
+      module: "./api/user/update-profile.js",
       login: true, // login is required
-      method: 'get',
-      view: "confirm",
-      path: "/confirm",
-      data: [],
-      description: "Confirm email address form."
+      verbose: true, /* show errors when attempting to update profile */
+      method: 'post',
+      path: '/update-profile',
+      data: [
+        { id: 'email',      type: 'email',      required:false },
+        { id: 'firstName',  type: 'first-name', required:false },
+        { id: 'lastName',   type: 'last-name',  required:false }
+      ],
     },
 
     {
-      name: "validate",
-      description: "Verify email address code.",
+      name: "update-password",
+      description: "update user password",
+      module: "./api/user/update-password.js",
       login: true, // login is required
-      method: 'get',
-      path: "/validate",
+      verbose: true, /* show errors when attempting to update profile */
+      method: 'post',
+      path: '/update-password',
       data: [
-        { id: 'code', type: 'alphanumeric', required:true }
+        { id: 'currentPassword', type: 'password', required:true },
+        { id: 'newPassword', type: 'password', required:true },
       ],
     },
 
     /* post only */
     {
-      name: "support",
+      name: "support-contact",
       description: "send a message to tech support",
+      module: "./api/support/contact.js",
       login: true, // login is required
       verbose: true, /* show errors when attempting to communicate */
       method: 'post',
-      path: '/support',
+      path: '/support-contact',
       data: [
         { id: 'subject', type: 'text', required:true },
         { id: 'message', type: 'text', required:true }
       ],
     },
 
-    {
-      name: "update",
-      description: "update user profile",
-      login: true, // login is required
-      verbose: true, /* show errors when attempting to update profile */
-      method: 'post',
-      path: '/update',
-      data: [
-        { id: 'email',      type: 'email',      required:false },
-        { id: 'first_name', type: 'first-name', required:false },
-        { id: 'last_name',  type: 'last-name',  required:false }
-      ],
-    },
-
-    {
-      name: "password",
-      description: "update user password",
-      login: true, // login is required
-      verbose: true, /* show errors when attempting to communicate */
-      method: 'post',
-      path: '/password',
-      data: [
-        { id: 'new_password', type: 'password', required:true },
-        { id: 'old_password', type: 'password', required:true }
-      ],
-    }
+    /* Utility Section */
+    { name: "logout", module: "./api/logout.js", method: 'get', path: "/logout", data: [] },
 
   ],
 

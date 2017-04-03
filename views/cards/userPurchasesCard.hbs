@@ -1,0 +1,15 @@
+<div class="card py-3 my-3" style="min-height: 75vh;">
+  <div class="card-block">
+    <h4 class="card-title text-muted">Your Purchases</h4>
+    <p class="card-text"></p>
+
+    <ul class="list-group list-group-flush">
+      {{#each purchasedItems}}
+        <li class="list-group-item small"><i class="fa fa-fw fa-file-zip-o"></i>
+          <a class="btn btn-link" href="/download/{{inDoubleQuotedAttr link}}.zip">{{inHTMLData name}}</a>
+        </li>
+        {{~/each}}
+    </ul>
+
+  </div>
+</div>

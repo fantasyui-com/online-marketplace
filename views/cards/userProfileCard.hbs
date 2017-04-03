@@ -1,0 +1,29 @@
+
+<div class="card py-3 my-3" style="min-height: 75vh;">
+  <div class="card-block">
+    <h4 class="card-title text-muted">Account Profile</h4>
+    <p class="card-text"></p>
+    <form action="{{inDoubleQuotedAttr link.updateProfile}}" method="post" enctype="application/x-www-form-urlencoded">
+
+      <div class="form-group">
+        <label for="firstName">First Name</label>
+        <input type="text" class="form-control" id="firstName" name="firstName" aria-describedby="firstNameHelp" placeholder="Enter first name" value="{{inDoubleQuotedAttr firstName}}">
+        <small id="firstNameHelp" class="form-text text-muted">Please keep your profile information up-to-date.</small>
+      </div>
+
+      <div class="form-group">
+        <label for="lastName">Last Name</label>
+        <input type="text" class="form-control" id="lastName" name="lastName" aria-describedby="lastNameHelp" placeholder="Enter last name" value="{{inDoubleQuotedAttr lastName}}">
+        <small id="lastNameHelp" class="form-text text-muted">We need your basic information to track your purchases and verify your account/security.</small>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email address</label>
+        <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" placeholder="Enter email" value="{{inDoubleQuotedAttr email}}">
+        <small id="emailHelp" class="form-text text-muted">Please keep your email up-to-date, we need it to help you recover lost passwords and keep track of your purchases.</small>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Update Profile</button>
+    </form>
+  </div>
+</div>
