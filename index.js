@@ -275,7 +275,7 @@ class OnlineMarketplace {
             if(input[item.id]){
               if( this.isInvalid(item.type, input[item.id]) ){
                 // errors.push(`${device.method}:/${device.path}/${item.id} is invalid.`)
-                errors.push(`Invalid ${item.id.replace(/[^a-zA-Z0-9]/,' ')}`)
+                errors.push(`Invalid ${item.id.replace(/[^a-zA-Z0-9]/,'x')}`)
               }else{
                 // perfect!
               }
@@ -295,14 +295,27 @@ class OnlineMarketplace {
           if(device.dataSet && device.dataSet.has(item)){
             // fantasic!
           }else{
-            errors.push(`${device.method}:/${device.path}/${item} is not allowed.`)
+
+            if(this.options.production){
+              errors.push(`Request contained data that was not whilelisted.`)
+            }else{
+              let saferName = item.replace(/[^a-zA-Z0-9]/,'_');
+              saferName = xssFilters.inHTMLData(saferName);
+            }
+
           }
         });
 
         if(errors.length){
 
-          let msg = `The following error${errors.length>1?'s':''} occured during the processing of your request: ${errors.join(', ')}. Please correct ${errors.length>1?'them':'it'} and try again. If you feel you received this message in error, please contact support.`;
-          if(1||device.verbose){
+          let msg;
+          if(this.options.production){
+            msg = `${errors.length} error${errors.length>1?'s':''} occured during the processing of your request. Please try to correct ${errors.length>1?'them':'it'} and try again. If you feel you received this message in error, please contact support.`;
+          } else {
+            msg = `The following error${errors.length>1?'s':''} occured during the processing of your request: ${errors.join(', ')}. Please correct ${errors.length>1?'them':'it'} and try again. If you feel you received this message in error, please contact support.`;
+          }
+
+          if(device.verbose){
             return next( new Error(msg) );
           }else{
             return res.redirect(this.options.links.home);

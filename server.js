@@ -3,6 +3,11 @@ const OnlineMarketplace = require('./index.js');
 // Tip: You want to load this from a file or some safe place.
 const onlineMarketplace = new OnlineMarketplace({
 
+  // NOTE: Loose lips sink ships.
+  // setting production to true will lower the ammount of error information shared with the user.
+  // to harden the server to maximum disable structure device verbosity.
+  production: false,
+
   port: 8080,
   host: '127.0.0.1',
 
