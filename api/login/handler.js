@@ -2,6 +2,7 @@ module.exports = async function({options}){
 
   return async (req, res) => {
 
+    /// NOTE: NETSEC: these have already been validated by the security middleware.
     let username = req.body.username;
     let password = req.body.password;
 
@@ -17,6 +18,7 @@ module.exports = async function({options}){
       return res.render("error", Object.assign({}, req.state, {message: 'Invalid Password'} ));
     }
 
+    // NOTE: NETSEC: this is not a normal cookie, the client side can't tamper with it.
     // yay they made it! user is valid, gets the session setup
     req[this.options.clientSessionsCookieName].username = username;
 

@@ -2,6 +2,7 @@ module.exports = async function({options}){
 
   return async (req, res) => {
 
+    // NOTE: NETSEC: these have already been validated by the security middleware.
     let username = req.body.username;
     let password = req.body.password;
 
