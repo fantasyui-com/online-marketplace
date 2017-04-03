@@ -13,6 +13,7 @@ const onlineMarketplace = new OnlineMarketplace({
 
   clientSessionsSecret: 'eef62de5-6755-4353-a21e-042471e71bc3', // set this to a long random string!
   clientSessionsCookieName: 'a138b116567ba', // set this to something random and unique to your program.
+  csrfProtectionCookieName: 'eef62de5a5asd', // set this to something random and unique to your program.
 
   /* Strict Structure Declaration */
 
@@ -64,7 +65,6 @@ const onlineMarketplace = new OnlineMarketplace({
     {
       name: "products",
       module: "./api/render.js",
-
       method: 'get',
       view: 'products',
       path: "/products",
@@ -76,11 +76,12 @@ const onlineMarketplace = new OnlineMarketplace({
     },
 
 
-    { name: "signup", module: "./api/signup/form.js", method: 'get', view: "signup", path: "/signup", data: [], values: [{id:'isLoggedIn'}]},
+    { name: "signup", module: "./api/signup/form.js", method: 'get', form: true, view: "signup", path: "/signup", data: [], values: [{id:'isLoggedIn'}]},
     {
       name: "signup-handler",
       module: "./api/signup/handler.js",
       method: 'post',
+      csrf: true,
       path: "/signup",
       verbose: true, /* show errors when signing up */
       data: [
@@ -92,11 +93,12 @@ const onlineMarketplace = new OnlineMarketplace({
       ]
     },
 
-    { name: "login", module: "./api/login/form.js", method: 'get', view: "login", path: "/login", data: [], values: [{id:'isLoggedIn'}]},
+    { name: "login", module: "./api/login/form.js", method: 'get', form: true, view: "login", path: "/login", data: [], values: [{id:'isLoggedIn'}]},
     {
       name: "login-handler",
       module: "./api/login/handler.js",
       method: 'post',
+      csrf: true,
       path: "/login",
       verbose: true, /* show errors when signing up */
       data: [
@@ -115,9 +117,11 @@ const onlineMarketplace = new OnlineMarketplace({
       module: "./api/user/home.js",
       login: true, // login is required
       method: 'get',
+      form: true,
       view: "user",
       path: "/user",
       data: [],
+
       values: [ /* Only these values will be made available to the view */
 
         { id: 'isLoggedIn' },
@@ -142,6 +146,7 @@ const onlineMarketplace = new OnlineMarketplace({
       login: true, // login is required
       verbose: true, /* show errors when attempting to update profile */
       method: 'post',
+      csrf: true,
       path: '/update-profile',
       data: [
         { id: 'email',      type: 'email',      required:false },
@@ -157,6 +162,7 @@ const onlineMarketplace = new OnlineMarketplace({
       login: true, // login is required
       verbose: true, /* show errors when attempting to update profile */
       method: 'post',
+      csrf: true,
       path: '/update-password',
       data: [
         { id: 'currentPassword', type: 'password', required:true },
@@ -164,7 +170,7 @@ const onlineMarketplace = new OnlineMarketplace({
       ],
     },
 
-    /* post only */
+    /* input only */
     {
       name: "support-contact",
       description: "send a message to tech support",
@@ -172,6 +178,7 @@ const onlineMarketplace = new OnlineMarketplace({
       login: true, // login is required
       verbose: true, /* show errors when attempting to communicate */
       method: 'post',
+      csrf: true,
       path: '/support-contact',
       data: [
         { id: 'subject', type: 'text', required:true },

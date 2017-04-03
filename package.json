@@ -20,6 +20,8 @@
   "dependencies": {
     "body-parser": "^1.17.1",
     "client-sessions": "^0.7.0",
+    "cookie-parser": "^1.4.3",
+    "csurf": "^1.9.0",
     "hardened-express": "^1.0.4",
     "hbs": "^4.0.1",
     "lodash": "^4.17.4",

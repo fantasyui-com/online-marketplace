@@ -13,6 +13,7 @@
       <div class="card">
         <div class="card-block">
           <form action="{{inDoubleQuotedAttr link.loginHandler}}" method="post" enctype="application/x-www-form-urlencoded">
+            <input type="hidden" name="_csrf" value="{{csrfToken}}">
             <div class="form-group">
               <label for="username">Username</label>
               <input type="text" class="form-control" id="username" name="username" aria-describedby="usernameHelp" placeholder="Enter Username">

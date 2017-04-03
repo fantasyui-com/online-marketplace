@@ -12,6 +12,10 @@ const capitalize = require('lodash/capitalize');
 const kebabCase = require('lodash/kebabCase');
 const camelCase = require('lodash/camelCase');
 
+const cookieParser = require('cookie-parser');
+
+const csrf = require('csurf');
+
 const xssFilters = require('xss-filters');
 
 var hbs = require('hbs');
@@ -35,6 +39,14 @@ class OnlineMarketplace {
     this.options.structure.forEach(device => {
       device.dataSet = new Set( device.data.map(i=>i.id) ); // create a set from id/s
     });
+
+    // allow device.csrf when a device is put into csrf mode.
+    this.options.structure.forEach(device => {
+      if(device.csrf){
+        device.dataSet.add('_csrf');
+      }
+    });
+
 
     // create easy links (fun for ejs)
     this.options.links = {};
@@ -204,6 +216,8 @@ class OnlineMarketplace {
 
     let app = this.app;
 
+    const csrfProtection = csrf({ cookie: {key: this.options.csrfProtectionCookieName} });
+
     app.use(clientSessions({
       cookieName: this.options.clientSessionsCookieName,
       secret: this.options.clientSessionsSecret,
@@ -228,6 +242,10 @@ class OnlineMarketplace {
     }
 
     app.set("view engine", "hbs");
+
+    app.use(cookieParser());
+
+    //app.use(csrf({ cookie: true }))
 
     //app.use( await this.model.bind(this) );
 
@@ -291,6 +309,8 @@ class OnlineMarketplace {
         }
 
         // eveything else is blacklisted.
+
+
         Object.keys(input).forEach(item=>{
           if(device.dataSet && device.dataSet.has(item)){
             // fantasic!
@@ -332,11 +352,24 @@ class OnlineMarketplace {
 
     let routeInstaller = [];
     this.options.structure.forEach(async device => {
+
       routeInstaller.push(new Promise(async (resolve, reject) => {
 
         const args = [device.path];
 
-        if(device.method === 'post') args.push ( urlencodedParser ) ;
+
+
+
+        if(device.method === 'post') {
+          args.push (urlencodedParser);
+        }
+
+        if(device.csrf) {
+          args.push (csrfProtection);
+        }
+        if(device.form) {
+          args.push (csrfProtection);
+        }
 
         if(device.login) args.push ( validUserIsRequired ) ;
 
@@ -359,6 +392,14 @@ class OnlineMarketplace {
           }
           next();
         });
+
+        if(device.form) {
+          args.push ( async (req, res, next) => {
+            // all pages with forms are given a csrfToken. This is used in forms.
+            req.state.csrfToken = req.csrfToken();
+            next();
+          });
+        }
 
         let routeInstaller = require(device.module).bind(this);
         let deviceRoute = await routeInstaller({options:device});

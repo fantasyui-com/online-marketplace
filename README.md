@@ -11,6 +11,95 @@ Simple online marketplace for selling files.
 - Secure whitelisted-input forms via hash key in the form.
 - Autorotate any needed secret-keys to prevent 'put your secret key here' secrets.
 
+### Threat Review
+
+#### 1. Injection
+
+All input values are validated. Only pre-configured values are allowed. Stray input is not allowed and results in request being denied.
+
+Areas for Improvement:
+- Use multiple data validators to lower the risk of letting through malicious input due to third-party bugs.
+
+#### 2. Broken/Misconfigured Authentication/Session
+
+The authentication cookie is encrypted and tamper-proof. The forms use csrf protection.
+
+Areas for Improvement:
+- Use multiple csrf validators to lower the risk of letting through malicious input due to third-party bugs.
+- Create a security configuration tester report.
+  - verify that all forms use csrf.
+  - verify that secret encryption keys are rotated frequently (black list old keys).
+
+#### 3. XSS Attacks
+
+Template engine (views) have been downgraded to a simple HTML renderer. The renderer uses context sensitive
+(inHTMLData, inSingleQuotedAttr, inDoubleQuotedAttr, inUnQuotedAttr) string filters in all instances.
+
+Areas for Improvement:
+- Create a security configuration tester report.
+  - verify that all templates use XSS filters when printing values.
+
+#### 4. Reference Switching Attack
+
+Only one reference is kept, in one place.
+
+User id/username is the only piece of information that is kept between requests. It is stored in an encrypted and tamper proof cookie on the client side.
+
+Areas for Improvement:
+- Use multiple data validators to lower the risk of letting through malicious input due to third-party bugs. In this instance use a mechanism that will specifically monitor for a switched reference. This is only a backup measure (Belt and Suspenders kind of thing.)
+
+#### 5. Security Misconfiguration
+
+The server configuration file is easy to read, but the system will eventually have a secondary measure in the form of a security configuration tester and report tool. dr.security.js in addition to test.js (or hack.js as it should correctly be refered to)
+
+#### 6. Limited Data Exposure
+
+The only ```required``` piece of information is password which is encrypted.
+
+The ```optional``` sensitive data kept on the server is email, first name, last name.
+
+Data that can be exposed during a compromised user account:
+
+- username
+- email
+- first name
+- last name
+- list of purchased fi  les
+- list of account activity
+
+Areas for Improvement:
+
+- Remove the following from information being asked:
+  - first name
+  - last name
+- Show the following only upon a request, limit number of requests, of introduce a wait period:
+  - email: user can only change but not see the email address that is on file.
+  - list of account activity: delay by 10 minutes, a large increase in requests for account activity will result in DEFCON 2/3
+  - list of purchases, show only recent, delay full list.
+
+#### 7. Access Control Monitoring
+
+There are only two levels. Guest User and Logged In User. Guest user cannot send data to POST end-points as each is protected via authentication.
+
+Areas for Improvement:
+- Create a security configuration report that shows what functions are available to guest users and which functions require authentication.
+
+#### 8. Cross-Site Request Forgery Attack
+
+All forms use CSRF tokens.
+
+#### 9. Underlying Library Vulnerability Monitoring
+
+Security report includes monitoring of Node Security Platform [advisories](https://nodesecurity.io/advisories/)
+
+Areas for Improvement:
+- Daily security reports sent from each server.
+
+
+#### 10. Redirect Attack
+
+All Redirects and Forwards are local urls are set in the configuration file and are referenced by id/name. All redirects and forwards are validated.
+
 ### Detail
 
 Credit Cards via Stripe Checkout pattern, this means ```only``` the user's "email" and "productName" will touch the server.

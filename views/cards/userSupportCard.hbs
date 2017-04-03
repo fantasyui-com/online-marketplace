@@ -2,24 +2,19 @@
   <div class="card-block">
     <h4 class="card-title text-muted">Contact Support</h4>
     <p class="card-text"></p>
-
     <form action="{{inDoubleQuotedAttr link.supportContact }}" method="post" enctype="application/x-www-form-urlencoded">
-
+      <input type="hidden" name="_csrf" value="{{csrfToken}}">
       <div class="form-group">
         <label for="subject">Subject</label>
         <input type="text" class="form-control" id="subject" name="subject" aria-describedby="subjectHelp" placeholder="Enter message subject">
         <small id="subjectHelp" class="form-text text-muted">Please be specific.</small>
       </div>
-
       <div class="form-group">
         <label for="message">Message</label>
         <textarea class="form-control" id="message" name="message" rows="5"></textarea>
         <small id="messageHelp" class="form-text text-muted">Please use plain text, HTML is not allowed.</small>
-
       </div>
-
       <button type="submit" class="btn btn-primary">Send Message</button>
     </form>
-
   </div>
 </div>
