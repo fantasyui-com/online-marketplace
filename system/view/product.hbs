@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+{{> htmlHead}}
+<body>
+{{> header}}
+{{> navigation }}
+
+{{> subtitle title=selectedProduct.title text=selectedProduct.description}}
+
+<div class="container py-3">
+  <div class="row">
+
+      <div class="col-lg-8 p-3">
+        <div class="card">
+          <div class="card-header">{{inHTMLData selectedProduct.title}}</div>
+          <img class="card-img-top img-fluid" src="{{inDoubleQuotedAttr selectedProduct.screenshot}}" alt="{{inDoubleQuotedAttr selectedProduct.title}} Screenshot">
+          <div class="card-block">
+            <p class="card-text">{{inHTMLData selectedProduct.description}}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4 p-3">
+
+        <div class="card mb-3">
+          <div class="card-block">
+            <a href="#" class="btn btn-primary btn-block">BUY</a>
+            <p class="card-text text-muted text-center px-3 mx-3 small">Purchase {{inHTMLData selectedProduct.title}} Standard License  for ${{inHTMLData selectedProduct.price}}</p>
+          </div>
+        </div>
+
+        <div class="card mb-3">
+          <div class="card-block">
+            <a href="{{inDoubleQuotedAttr selectedProduct.demo}}" class="btn btn-info btn-block">Live Preview</a>
+            <p class="card-text text-muted text-center px-3 mx-3 small">Preview live {{inHTMLData selectedProduct.title}} in full prior to purchase.</p>
+          </div>
+        </div>
+
+        <div class="card mb-3">
+          <div class="card-header">{{inHTMLData selectedProduct.title}} Properties</div>
+
+          <table class="table table-sm table-striped">
+            <tbody>
+
+              {{#each selectedProduct.properties}}
+              <tr>
+                <td class="w-50"><span class="small text-muted">{{inHTMLData label}}</span></td>
+                <td class="w-50"><span class="small">{{inHTMLData text}}</span></td>
+              </tr>
+              {{~/each}}
+
+            </tbody>
+          </table>
+
+        </div>
+
+
+
+
+
+
+
+
+        <div class="card">
+          <div class="card-header">Licensing Options</div>
+
+            <div class="container-fluid p-3">
+              {{#each selectedProduct.licensing}}
+                <div class="row">
+
+                    <div class="col-4 p-3"><span class="small text-muted">{{inHTMLData type}}:</span></div>
+                    <div class="col-8 p-3 text-right">
+                      <a href="#" class="btn btn-info btn-sm btn-block">${{inHTMLData price}}</a>
+                    </div>
+
+                </div>
+              {{~/each}}
+            </div>
+
+        </div>
+
+      </div>
+
+  </div>
+</div>
+
+{{#if selectedProduct.screenshots}}
+  {{> subtitle title="Product Screenshots" text="Additional product screenshots"}}
+  <div class="container py-3">
+    <div class="row">
+      {{#each selectedProduct.screenshots}}
+        <div class="col-md-4 p-3">
+          <div class="card">
+            <img class="card-img-top img-fluid" src="{{inDoubleQuotedAttr this}}" alt="{{inDoubleQuotedAttr selectedProduct.title}} Screenshot">
+          </div>
+        </div>
+      {{~/each}}
+    </div>
+  </div>
+{{/if}}
+
+{{> subtitle title="Related Products" text="Products you might also be interested in."}}
+
+<div class="container py-3">
+  <div class="row">
+    {{#each relatedProducts}}
+      <div class="col-md-4 p-3">
+        {{> productCard}}
+      </div>
+    {{~/each}}
+  </div>
+</div>
+
+{{> footer}}
+{{> htmlFoot}}
+</body>
+</html>

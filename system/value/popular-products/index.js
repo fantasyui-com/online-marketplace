@@ -1,4 +1,5 @@
 const db = require("product-catalog");
+const expander = require("../../helpers/product-expander");
 
 module.exports = function({model,variable}){
 
@@ -6,12 +7,7 @@ module.exports = function({model,variable}){
 
   if((variable.begin!==undefined) || (variable.end!==undefined)) result = result.slice(variable.begin||0, variable.end||result.length-1);
 
-  // note amount is in cents
-  result = result.map(i=>{
-    i.price = (parseInt(i.amount)/100).toFixed(2) + " " + i.currency.toUpperCase();
-    return i;
-  })
+  result = result.map(i=>expander(i))
 
   return result;
-
 };

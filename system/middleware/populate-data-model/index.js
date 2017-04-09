@@ -1,22 +1,30 @@
 const path = require("path");
+module.exports = async function ({ route }) {
 
-module.exports = async function({route}){
+  return async function (req, res, next) {
 
+    try {
 
-  return async function(req, res, next){
-
-    if(route.viewModel){
-      await Promise.all( route.viewModel.map( async variable => {
+      if(route.viewModel) await Promise.all( route.viewModel.map( async variable => {
         return (new Promise(async (resolve, reject) => {
           const dataModule = await require( path.join(__dirname, '..', '..', 'value', variable.module) );
-          req.model[variable.name] = await dataModule({model:req.model,variable});
-          resolve();
+
+          try{
+            req.model[variable.name] = await dataModule({req, model:req.model, variable});
+            resolve();
+          }catch(err){
+            reject(err);
+          }
+
         }))
       }));
-      console.log( req.model );
+      console.log("\n\n",route.routeName)
+      console.log(req.model)
+      next();
+
+    } catch (err) {
+      next(err);
     }
-    next();
 
   }
-
 };

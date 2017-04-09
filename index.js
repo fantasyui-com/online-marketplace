@@ -20,7 +20,18 @@ const app = express();
 app.set('views', [ path.join(__dirname, 'system', 'view') ]);
 app.set("view engine", "hbs");
 
-const denyCors               = function(){ return function(req, res, next){ console.log('deny-cors              '); next(); } };
+const denyCors = function(){
+  return function(req, res, next){
+    let origin = req.get('Origin');
+    if( origin ){
+      console.log('Origin Detected.')
+      next( new Error('Origin header detected: ' + xssFilters.inHTMLData( origin )) );
+    } else {
+      next();
+    }
+  }
+};
+
 const denyOldBrowsers        = function(){ return function(req, res, next){ console.log('deny-old-browsers       '); next(); } };
 const verifyCsrfToken        = function(){ return function(req, res, next){ console.log('verify-csrf-token       '); next(); } };
 const denyUndefinedVariables = function(){ return function(req, res, next){ console.log('deny-undefined-variables'); next(); } };
@@ -30,7 +41,7 @@ const upgradeAnonymousUser   = function(){ return function(req, res, next){ cons
 const requireValidUser       = function(){ return function(req, res, next){ console.log('require-valid-user      '); next(); } };
 
 const createDataModel        = require( path.join(__dirname, 'system', 'middleware', 'create-data-model') );
-const populateDataModel        = require( path.join(__dirname, 'system', 'middleware', 'populate-data-model') );
+const populateDataModel      = require( path.join(__dirname, 'system', 'middleware', 'populate-data-model') );
 const installPageLinks       = require( path.join(__dirname, 'system', 'middleware', 'install-page-links') );
 
 const createEventModel       = function(){ return function(req, res, next){ console.log('create-event-model     '); next(); } };
@@ -103,7 +114,7 @@ await Promise.all( conf.routes.map( async route => {
     // MODEL //
     // Appropriate Access Controls
     middleware.push( createDataModel({conf, route}) ); // prepare the internal data model
-    middleware.push( await populateDataModel({conf, route}) ); // prepare the internal data model
+    middleware.push( await populateDataModel({ conf, route }) ); // prepare the internal data model
     middleware.push( installPageLinks(conf) );
     // MODEL //
 
@@ -126,16 +137,16 @@ await Promise.all( conf.routes.map( async route => {
 
 // All unmatched routes are redirected back to home page
 app.get('*',function (req, res) {
-  console.log('WILDCARD MATCH!!', req.url);
-  // res.redirect('/');
+  res.redirect('/');
 });
 
 // Error and Exception Handling
 // Logging and Intrusion Detection
 app.use(function (err, req, res, next) {
 
-  // TODO: regexp to remove __dirname
-  let message = err.message;
+  console.log('Error:', err)
+
+  let message = err.message|| err ||"Server Request Error";
   let localPath = path.resolve('./');
 
   // NETSEC: Sensitive Data Exposure, Local Path Exposure
@@ -145,8 +156,8 @@ app.use(function (err, req, res, next) {
   message = message.replace(new RegExp('.hbs','g'),'');
 
   res.render("error", Object.assign({}, req.state, {message} ));
-
   res.status(500);
+
 });
 
  return app;

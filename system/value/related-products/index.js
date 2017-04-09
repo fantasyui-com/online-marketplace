@@ -10,4 +10,5 @@ module.exports = function({model,variable}){
   result = result.map(i=>expander(i))
 
   return result;
+
 };

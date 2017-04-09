@@ -4,6 +4,7 @@
   "description": "Simple online marketplace for selling files.",
   "main": "index.js",
   "scripts": {
+    "watch": "supervisor --extensions 'node,js,hbs,json' server.js"
     "test": "mocha"
   },
   "config": {
@@ -32,12 +33,49 @@
     "xss-filters": "^1.2.7"
   },
   "routes": [
+
     {
       "routeName": "home",
       "moduleName": "simple-render",
       "httpVerb": "get",
-      "urlPath": "/home",
+      "urlPath": "/",
       "viewId": "index",
+      "errorVerbosity": 5,
+      "dataWhitelist": [],
+      "loginRequired": false,
+      "userTags": [
+        "!banned"
+      ],
+      "handlerEvent": [
+        { "name": "test", "module": "./action/test" }
+      ],
+      "viewModel": [
+        { "name": "featuredProducts", "module": "featured-products", "begin": 0, "end": 4 },
+        { "name": "popularProducts", "module": "popular-products", "begin": 0, "end": 3 }
+      ]
+    },
+
+    {
+      "routeName": "about",
+      "moduleName": "simple-render",
+      "httpVerb": "get",
+      "urlPath": "/about",
+      "viewId": "about",
+      "errorVerbosity": 5,
+      "dataWhitelist": [],
+      "loginRequired": false,
+      "userTags": [],
+      "handlerEvent": [],
+      "viewModel": []
+    },
+
+
+    {
+      "routeName": "products",
+      "moduleName": "simple-render",
+      "httpVerb": "get",
+      "urlPath": "/products",
+      "viewId": "products",
       "errorVerbosity": 5,
       "dataWhitelist": [],
       "loginRequired": false,
@@ -51,20 +89,40 @@
         }
       ],
       "viewModel": [
-        {
-          "name": "featuredProducts",
-          "module": "featured-products",
-          "begin": 0,
-          "end": 4
-        },
-        {
-          "name": "popularProducts",
-          "module": "popular-products",
-          "begin": 0,
-          "end": 3
-        }
+        { "name": "browseProducts", "module": "browse-products" }
       ]
     },
+
+
+    {
+      "routeName": "product",
+      "moduleName": "simple-render",
+      "httpVerb": "get",
+      "urlPath": "/product/:authorId/:productName",
+      "viewId": "product",
+      "errorVerbosity": 5,
+
+      "dataWhitelist": [
+        { "id":"authorId" },
+        { "id":"productName" }
+      ],
+
+      "loginRequired": false,
+
+      "userTags": [
+        "!banned"
+      ],
+
+      "handlerEvent": [
+        { "name": "test", "module": "./action/test" }
+      ],
+
+      "viewModel": [
+        { "name": "selectedProduct", "module": "selected-product" },
+        { "name": "relatedProducts", "module": "related-products", "begin": 0, "end": 3 }
+      ]
+    },
+
     {
       "routeName": "purchases",
       "moduleName": "simple-render",
@@ -78,10 +136,7 @@
         "!banned"
       ],
       "handlerEvent": [
-        {
-          "id": "test",
-          "module": "./action/test"
-        }
+        { "id": "test", "module": "./action/test" }
       ],
       "viewModel": []
     },

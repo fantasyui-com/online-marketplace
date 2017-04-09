@@ -1,12 +1,9 @@
 module.exports = async function({route}){
 
   return async (req, res) => {
-    // VERIFY THAT THE OUTPUT DOES NOT CONTAIN javascript: or data:
-    // VERIGYT THAT THE OUTPUT does not contain any script tags.
 
-    console.log("Request for: %s", route.urlPath)
-
-    console.log(req.model)
+    //TODO: VERIFY THAT THE OUTPUT DOES NOT CONTAIN JAVASCRIPT: OR DATA:
+    //TODO: VERIFY THAT THE OUTPUT DOES NOT CONTAIN SCRIPT TAGS.
 
     res.render(route.viewId, req.model );
 

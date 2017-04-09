@@ -9,11 +9,13 @@
 
 <div class="container py-3">
   <div class="row">
-    {{#each browseProducts}}
-      <div class="col-md-4 p-3">
-        {{> productCard}}
+    <div class="colp-3">
+      <div class="card-columns">
+      {{#each browseProducts}}
+          {{> productCard}}
+      {{~/each}}
       </div>
-    {{~/each}}
+    </div>
   </div>
 </div>
 
