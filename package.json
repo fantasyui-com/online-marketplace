@@ -4,7 +4,7 @@
   "description": "Simple online marketplace for selling files.",
   "main": "index.js",
   "scripts": {
-    "watch": "supervisor --extensions 'node,js,hbs,json' server.js"
+    "watch": "supervisor --extensions 'node,js,hbs,json' server.js",
     "test": "mocha"
   },
   "config": {
@@ -43,12 +43,8 @@
       "errorVerbosity": 5,
       "dataWhitelist": [],
       "loginRequired": false,
-      "userTags": [
-        "!banned"
-      ],
-      "handlerEvent": [
-        { "name": "test", "module": "./action/test" }
-      ],
+      "userTags": [],
+      "handlerEvent": [],
       "viewModel": [
         { "name": "featuredProducts", "module": "featured-products", "begin": 0, "end": 4 },
         { "name": "popularProducts", "module": "popular-products", "begin": 0, "end": 3 }
@@ -69,7 +65,6 @@
       "viewModel": []
     },
 
-
     {
       "routeName": "products",
       "moduleName": "simple-render",
@@ -79,15 +74,8 @@
       "errorVerbosity": 5,
       "dataWhitelist": [],
       "loginRequired": false,
-      "userTags": [
-        "!banned"
-      ],
-      "handlerEvent": [
-        {
-          "name": "test",
-          "module": "./action/test"
-        }
-      ],
+      "userTags": [],
+      "handlerEvent": [],
       "viewModel": [
         { "name": "browseProducts", "module": "browse-products" }
       ]
@@ -108,10 +96,7 @@
       ],
 
       "loginRequired": false,
-
-      "userTags": [
-        "!banned"
-      ],
+      "userTags": [],
 
       "handlerEvent": [
         { "name": "test", "module": "./action/test" }
@@ -140,6 +125,7 @@
       ],
       "viewModel": []
     },
+
     {
       "routeName": "account",
       "moduleName": "simple-render",
