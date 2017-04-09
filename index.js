@@ -18,13 +18,6 @@ const csrf = require('csurf');
 
 const xssFilters = require('xss-filters');
 
-var hbs = require('hbs');
-hbs.registerPartials(__dirname + '/views/partials');
-hbs.registerPartials(__dirname + '/views/cards');
-hbs.registerHelper('inHTMLData', function(str) { return xssFilters.inHTMLData(str); });
-hbs.registerHelper('inSingleQuotedAttr', function(str) { return xssFilters.inSingleQuotedAttr(str); });
-hbs.registerHelper('inDoubleQuotedAttr', function(str) { return xssFilters.inDoubleQuotedAttr(str); });
-hbs.registerHelper('inUnQuotedAttr', function(str) { return xssFilters.inUnQuotedAttr(str); });
 
 class OnlineMarketplace {
 
@@ -62,7 +55,7 @@ class OnlineMarketplace {
 
    // value producer for values.
 
-
+   // Data Getter
    async getValue({req, id, filter}){
 
      // Default response.
@@ -170,39 +163,63 @@ class OnlineMarketplace {
     let IS_OK = false;
 
     if(type === 'username'){
+
       if( validator.isEmpty(value) ) return INVALID;
+      if( value.includes("javascript:") ) return INVALID; // this is too unusual for a username
+      if( value.includes("data:") ) return INVALID; // this is too unusual for a username
       if( value.match(/[^a-z0-9-]/) ) return INVALID;
       if( value.length < 5 ) return INVALID;
+
       return IS_OK;
 
     } else if(type === 'password'){
+
       if( validator.isEmpty(value) ) return INVALID;
       if( validator.isEmail(value) ) return INVALID; // password can't be email, sorry.
+      if( value.includes("javascript:") ) return INVALID; // this is too unusual for a password
+      if( value.includes("data:") ) return INVALID; // this is too unusual for a password
       if( value.length < 10 ) return INVALID;
       if( zxcvbn(value).score < 3 ) return INVALID;
+
       return IS_OK;
 
     } else if(type === 'first-name'){
+
       if( validator.isEmpty(value) ) return INVALID;
+      if( value.includes("javascript:") ) return INVALID; // this is too unusual for a name
+      if( value.includes("data:") ) return INVALID; // this is too unusual for a name
       if( value.length < 2 ) return INVALID;
       if( !validator.isAlpha(value) ) return INVALID;
+
       return IS_OK;
 
     } else if(type === 'last-name'){
+
       if( validator.isEmpty(value) ) return INVALID;
+      if( value.includes("javascript:") ) return INVALID; // this is too unusual for a name
+      if( value.includes("data:") ) return INVALID; // this is too unusual for a name
       if( value.length < 2 ) return INVALID;
       if( !validator.isAlpha(value) ) return INVALID;
+
       return IS_OK;
 
     } else if(type === 'email'){
+
       if( validator.isEmpty(value) ) return INVALID;
+      if( value.includes("javascript:") ) return INVALID; // this is too unusual for a mail
+      if( value.includes("data:") ) return INVALID; // this is too unusual for a mail
       if( !validator.isEmail(value) ) return INVALID;
+
       return IS_OK;
 
     } else if(type === 'text'){
+
       if( validator.isEmpty(value) ) return INVALID;
+      if( value.includes("javascript:") ) return INVALID; // this is too unusual for a text
+      if( value.includes("data:") ) return INVALID; // this is too unusual for a text
       if( !validator.isAscii(value) ) return INVALID;
       if( value.match(/[<>=]/) ) return INVALID;
+
       return IS_OK;
 
     }else{
@@ -349,16 +366,13 @@ class OnlineMarketplace {
     });
 
 
-
     let routeInstaller = [];
+
     this.options.structure.forEach(async device => {
 
       routeInstaller.push(new Promise(async (resolve, reject) => {
 
         const args = [device.path];
-
-
-
 
         if(device.method === 'post') {
           args.push (urlencodedParser);
@@ -373,10 +387,8 @@ class OnlineMarketplace {
 
         if(device.login) args.push ( validUserIsRequired ) ;
 
-
-
         args.push ( async (req, res, next) => {
-          req.state = Object.assign({title:'?'}, this.options.model);
+          req.state = Object.assign({}, this.options.model);
           req.state.link  = this.options.links;
           if(device.values){
             // scan list of values....

@@ -31,10 +31,12 @@ const onlineMarketplace = new OnlineMarketplace({
       view: 'index',
       data: [],
       values: [
+
         { id: 'isLoggedIn' },
         { id: 'username' },
         { id: 'featuredProducts' },
         { id: 'popularProducts' },
+
       ]
     },
 

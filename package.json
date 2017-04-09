@@ -26,6 +26,7 @@
     "hardened-express": "^1.0.4",
     "hbs": "^4.0.1",
     "lodash": "^4.17.4",
+    "product-catalog": "^1.0.1",
     "user-manager": "^1.0.1",
     "uuid": "^3.0.1",
     "validator": "^7.0.0",
