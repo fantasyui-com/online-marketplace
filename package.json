@@ -1,36 +1,120 @@
 {
   "name": "online-marketplace",
   "version": "2.0.0",
+
   "description": "Simple online marketplace for selling files.",
   "main": "index.js",
+
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
+
+  "config": {
+    "host": "0.0.0.0",
+    "port": "3000"
+  },
+
   "repository": {
     "type": "git",
     "url": "git+https://github.com/fantasyui-com/online-marketplace.git"
   },
+
   "keywords": [],
   "author": "Captain Fantasy <fantasyui.com@gmail.com> (http://fantasyui.com)",
   "license": "GPL-3.0",
   "bugs": {
     "url": "https://github.com/fantasyui-com/online-marketplace/issues"
   },
+
   "homepage": "https://github.com/fantasyui-com/online-marketplace#readme",
+
   "dependencies": {
-    "bcryptjs": "^2.4.3",
+
     "body-parser": "^1.17.1",
-    "client-sessions": "^0.7.0",
-    "cookie-parser": "^1.4.3",
-    "csurf": "^1.9.0",
-    "hardened-express": "^1.0.4",
+    "express": "^4.15.2",
     "hbs": "^4.0.1",
+    "init": "^0.1.2",
     "lodash": "^4.17.4",
-    "product-catalog": "^1.0.1",
-    "user-manager": "^1.0.1",
-    "uuid": "^3.0.1",
-    "validator": "^7.0.0",
-    "xss-filters": "^1.2.7",
-    "zxcvbn": "^4.4.2"
-  }
+    "mocha": "^3.2.0",
+    "product-catalog": "^1.0.4",
+    "xss-filters": "^1.2.7"
+
+  },
+
+  "routes": [
+    {
+      "routeName": "home",
+      "moduleName": "simple-render",
+      "httpVerb": "get",
+      "urlPath": "/home",
+      "viewId": "index",
+      "errorVerbosity": 5,
+      "dataWhitelist": [],
+      "loginRequired": false,
+      "userTags": [
+        "!banned"
+      ],
+      "handlerEvent": [
+        {
+          "name": "test",
+          "module": "./action/test"
+        }
+      ],
+      "viewModel": [
+        {
+          "name": "featuredProducts",
+          "module": "featured-products",
+          "begin": 0,
+          "end": 4
+        },
+        {
+          "name": "popularProducts",
+          "module": "popular-products",
+          "begin": 0,
+          "end": 3
+        }
+      ]
+    },
+    {
+      "routeName": "purchases",
+      "moduleName": "simple-render",
+      "httpVerb": "get",
+      "urlPath": "/purchases",
+      "viewId": "purchases",
+      "errorVerbosity": 5,
+      "dataWhitelist": [],
+      "loginRequired": false,
+      "userTags": [
+        "!banned"
+      ],
+      "handlerEvent": [
+        {
+          "id": "test",
+          "module": "./action/test"
+        }
+      ],
+      "viewModel": []
+    },
+    {
+      "routeName": "account",
+      "moduleName": "simple-render",
+      "httpVerb": "get",
+      "urlPath": "/account",
+      "viewId": "account",
+      "errorVerbosity": 5,
+      "dataWhitelist": [],
+      "loginRequired": false,
+      "userTags": [
+        "!banned"
+      ],
+      "handlerEvent": [
+        {
+          "id": "test",
+          "module": "./action/test"
+        }
+      ],
+      "viewModel": []
+    }
+  ]
+  
 }

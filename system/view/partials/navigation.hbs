@@ -19,29 +19,12 @@
 
     </ul>
 
-      <ul class="navbar-nav mr-auto">
+      <ul class="navbar-nav mr-0">
 
-      {{#if isLoggedIn}}
-
-        <li class="nav-item">
-        <a class="nav-link" href="{{inDoubleQuotedAttr link.user}}">Account @{{inHTMLData username}}</a>
-        </li>
 
         <li class="nav-item">
-        <a class="nav-link active" href="{{inDoubleQuotedAttr link.logout}}">Logout</a>
+          <a class="nav-link active" href="{{inDoubleQuotedAttr link.purchases}}">Your Purchases</a>
         </li>
-
-      {{else}}
-
-        <li class="nav-item">
-        <a class="nav-link" href="{{inDoubleQuotedAttr link.signup}}">Sign Up</a>
-        </li>
-
-        <li class="nav-item">
-        <a class="nav-link active" href="{{inDoubleQuotedAttr link.login}}">Login</a>
-        </li>
-
-      {{/if}}
 
       </ul>
   </div>

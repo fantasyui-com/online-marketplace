@@ -1,6 +1,39 @@
 # online-marketplace
 Simple online marketplace for selling files.
 
+## Version 2.0, Hard Castle - What's New
+
+### Hardened Operations
+
+We have to face the question of Hackers versus Convenience, of "Liar Always Wins".
+The Stripe approach significantly reduces attack surface, code, and legal liability.
+We must use this to our advantage.
+
+Therefore and henceforth all data will reside on Stripe and Stripe-like servers.
+Email addresses will be stored as hashes as well, any operations concerning Email
+will either be initiated by the user (sending a request for purchased) or must
+be handled by remote sent-only logging middleware.
+
+What problem does this solve; did any of us have it.
+
+Breach. Should an attacker gain access to the server the will not be able to access
+customer data, they will only see HASHES of E-mail address with productID lists:
+
+{
+  "customerIdentity": "$2y$MeiPBk6TThfJV0o2UvcztGW7Vxe",
+  "purchasedProducts": ["Carbon", "Copper", "Oxygen"]
+}
+
+There is nothing useful a malicious actor will be able to do with this information.
+Customer remains fully protected.
+
+Note: In case of a customer request for a product re-download list, the email will
+be re-submitted to the server by the customer again, at which point the email
+will be tested against a stored hash value, upon a match, the list of re-download links
+will be emailed back to the customer. This eliminates the need for accounts on the server,
+for customer signups, for breach reporting (in some jurisdictions), it creates
+a truly secure worry free online-marketplace.
+
 ## Security
 
 ### Theory

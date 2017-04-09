@@ -1,452 +1,161 @@
-const express = require("hardened-express");
+const path = require("path");
 
-const clientSessions = require("client-sessions");
-const body = require("body-parser");
+// Only JSON is allowed, only via local, Cross-origin resource sharing is not allowed/implemented.
+const jsonParser = require("body-parser").json();
 
-const UserManager = require("user-manager");
-const userManager = new UserManager({storeLocation: './user-accounts/' ,});
-
-const validator = require('validator');
-const zxcvbn = require('zxcvbn');
-const capitalize = require('lodash/capitalize');
-const kebabCase = require('lodash/kebabCase');
-const camelCase = require('lodash/camelCase');
-
-const cookieParser = require('cookie-parser');
-
-const csrf = require('csurf');
+const hbs = require('hbs');
+hbs.registerPartials( path.join(__dirname, 'system', 'view', 'partials') );
+hbs.registerPartials( path.join(__dirname, 'system', 'view', 'cards') );
 
 const xssFilters = require('xss-filters');
 
+hbs.registerHelper('inHTMLData', function(str) { return xssFilters.inHTMLData(str); });
+hbs.registerHelper('inSingleQuotedAttr', function(str) { return xssFilters.inSingleQuotedAttr(str); });
+hbs.registerHelper('inDoubleQuotedAttr', function(str) { return xssFilters.inDoubleQuotedAttr(str); });
+hbs.registerHelper('inUnQuotedAttr', function(str) { return xssFilters.inUnQuotedAttr(str); });
 
-class OnlineMarketplace {
+const express = require('express');
+const app = express();
 
-  constructor(configuration) {
+app.set('views', [ path.join(__dirname, 'system', 'view') ]);
+app.set("view engine", "hbs");
 
-    let defaults = {};
-    this.options = Object.assign({}, defaults, configuration);
+const denyCors               = function(){ return function(req, res, next){ console.log('deny-cors              '); next(); } };
+const denyOldBrowsers        = function(){ return function(req, res, next){ console.log('deny-old-browsers       '); next(); } };
+const verifyCsrfToken        = function(){ return function(req, res, next){ console.log('verify-csrf-token       '); next(); } };
+const denyUndefinedVariables = function(){ return function(req, res, next){ console.log('deny-undefined-variables'); next(); } };
+const allowDefinedVariables  = function(){ return function(req, res, next){ console.log('allow-defined-variables '); next(); } };
+const establishAnonymousUser = function(){ return function(req, res, next){ console.log('establish-anonymous-user'); next(); } };
+const upgradeAnonymousUser   = function(){ return function(req, res, next){ console.log('upgrade-anonymous-user  '); next(); } };
+const requireValidUser       = function(){ return function(req, res, next){ console.log('require-valid-user      '); next(); } };
 
-    // ENHANCE PROGRAM METADATA BASED ON CONFIGURATION
-    // create data lookup set for blacklisting;
+const createDataModel        = require( path.join(__dirname, 'system', 'middleware', 'create-data-model') );
+const populateDataModel        = require( path.join(__dirname, 'system', 'middleware', 'populate-data-model') );
+const installPageLinks       = require( path.join(__dirname, 'system', 'middleware', 'install-page-links') );
 
-    this.options.structure.forEach(device => {
-      device.dataSet = new Set( device.data.map(i=>i.id) ); // create a set from id/s
-    });
+const createEventModel       = function(){ return function(req, res, next){ console.log('create-event-model     '); next(); } };
 
-    // allow device.csrf when a device is put into csrf mode.
-    this.options.structure.forEach(device => {
-      if(device.csrf){
-        device.dataSet.add('_csrf');
-      }
-    });
+async function configure(conf){
 
 
-    // create easy links (fun for ejs)
-    this.options.links = {};
-    this.options.structure.forEach(device => {
+// initialization, called once at start-up
+await Promise.all( conf.routes.map( async route => {
 
-      this.options.links[camelCase(device.name)] = device.path;
+  return (new Promise(async (resolve, reject) => {
 
-    });
+    const middleware = [ ];
 
-    this.app = express();
+    middleware.push( route.urlPath );
 
-   }
+    // A countermeasure against browsers that do not speak CORS
+    middleware.push( denyOldBrowsers(route) );
 
-   // value producer for values.
+    // all forms must be local via JSON.
+    // Cross-origin resource sharing is denied (Cross domain access is not-implemented thus denied by default)
 
-   // Data Getter
-   async getValue({req, id, filter}){
+    // A simple application/x-www-form-urlencoded based POST will not be allowed.
 
-     // Default response.
-     let response = null;
+    // POST application/x-www-form-urlencoded can be sent from anywhere in the web,
+    // whereas application/json falls under same-origin-policy,
+    // thus can only be sent to a local domain.
 
-     if(0){
+    // Only JSON can be sent, and only from local page.
+    // thus we ensure that the same-origin-policy is in effect.
+    // thus only local JavaScript can submit POST requests.
 
-     } else if(id === 'isLoggedIn'){
-       response = !!( req.userObject );
+    // A Maliciouss User will need to inject a script into a local page,
+    // the script will then be executed in context of a truseted user.
+    // Howerver, output is minimal and XSS filtered.
+    // Attacker is unable to inject script, thus, unable to submit requests as the user.
 
-     } else if(id === 'username'){
-       if(req.userObject && req.userObject._id){
-         response =  req.userObject._id
-       }
+    // Output is minimal and XSS filtered.
+    // Maliciouss User will be unable to execute local javascript due to XSS protection.
 
-     } else if(id === 'email'){
-       if(req.userObject && req.userObject.email){
-         response =  req.userObject.email
-       }
+    // When local code injection is impossible (via XSS filters),
+    //   and remote input disabled (via CORS-off and JSON-via-JSON-requirement and same-origin ),
+    //   Malicious User is unable to submit data via Modern Browser.
 
-     } else if(id === 'firstName'){
-       if(req.userObject && req.userObject.firstName){
-         response =  req.userObject.firstName
-       }
+    // Additionally, denyOldBrowsers is in effect,
+    // and verifyCsrfToken is still used (it is deposited into form)
+    // hacker would need JavaScript to pull the token out, XSS filters prevent that.
 
-     } else if(id === 'lastName'){
-       if(req.userObject && req.userObject.lastName){
-         response =  req.userObject.lastName
-       }
+    middleware.push( denyCors(route) ); // Cross domain access is denied by default (not implemented)
 
-     } else if(id === 'accountActions'){
-       if(req.userObject){
+    if(route.httpVerb === 'post') middleware.push ( jsonParser );
 
-         response = [];
+    // Verify for Security Early and Often
+    // Logging and Intrusion Detection
+    middleware.push( verifyCsrfToken(route) );
 
-         response.push({
-           type: "info",
-           title:"Whoo hoo!",
-           description:'Now we just need you to grab first product, we\'ll keep track of it for you.',
-           text:'Browse Products',
-           link:this.options.links.products,
-         });
-
-         response.push({
-           type: "warning",
-           title:"Security!",
-           description:'It has been 90 days since you changed your password.',
-           text:'Update Password',
-           link:'#action-update-password',
-         })
-
-       }
-
-     } else if(id === 'recentActivity'){
-       if(req.userObject && req.userObject.notes){
-         response = req.userObject.notes.slice(-7).map(i=>({note:i}));
-       }
-
-
-     } else if (
-       (id === 'browseProducts')||
-       (id === 'popularProducts')||
-       (id === 'featuredProducts')||
-       (id === 'purchasedItems')
-     ){
-       response = [];
-       for(let x=0; x<6; x++){
-         let product = {
-
-           /* NOTE: Custom Fields */
-           "title": `Theme #${x}`,
-           "link": `fantasyui-com/theme-number${x}`,
-           "price": `12.00`,
-
-           /* NOTE: Standard Fields */
-           "name": `theme-number${x}`,
-           "version": "1.0.13",
-           "description": "Simple online marketplace for selling files.",
-           "keywords": [],
-           "author": "Captain Fantasy <fantasyui.com@gmail.com> (http://fantasyui.com)",
-           "license": "Standard Closed License",
-           "bugs": {
-             "url": "https://github.com/fantasyui-com/online-marketplace/issues"
-           },
-           "homepage": "https://github.com/fantasyui-com/online-marketplace#readme",
-           "dependencies": {}
-         };
-
-
-         response.push(product);
-       }
-
-
-     } else {
-       throw new Error(`Unknown value id request in getValue. You must add a "${id.replace(/[^a-zA-Z0-9_-]/,'')}" reader getValue function.`);
-     }
-
-     return response;
-   }
-
-
-
-  isInvalid( type, value ){
-    let INVALID = true;
-    let IS_OK = false;
-
-    if(type === 'username'){
-
-      if( validator.isEmpty(value) ) return INVALID;
-      if( value.includes("javascript:") ) return INVALID; // this is too unusual for a username
-      if( value.includes("data:") ) return INVALID; // this is too unusual for a username
-      if( value.match(/[^a-z0-9-]/) ) return INVALID;
-      if( value.length < 5 ) return INVALID;
-
-      return IS_OK;
-
-    } else if(type === 'password'){
-
-      if( validator.isEmpty(value) ) return INVALID;
-      if( validator.isEmail(value) ) return INVALID; // password can't be email, sorry.
-      if( value.includes("javascript:") ) return INVALID; // this is too unusual for a password
-      if( value.includes("data:") ) return INVALID; // this is too unusual for a password
-      if( value.length < 10 ) return INVALID;
-      if( zxcvbn(value).score < 3 ) return INVALID;
-
-      return IS_OK;
-
-    } else if(type === 'first-name'){
-
-      if( validator.isEmpty(value) ) return INVALID;
-      if( value.includes("javascript:") ) return INVALID; // this is too unusual for a name
-      if( value.includes("data:") ) return INVALID; // this is too unusual for a name
-      if( value.length < 2 ) return INVALID;
-      if( !validator.isAlpha(value) ) return INVALID;
-
-      return IS_OK;
-
-    } else if(type === 'last-name'){
-
-      if( validator.isEmpty(value) ) return INVALID;
-      if( value.includes("javascript:") ) return INVALID; // this is too unusual for a name
-      if( value.includes("data:") ) return INVALID; // this is too unusual for a name
-      if( value.length < 2 ) return INVALID;
-      if( !validator.isAlpha(value) ) return INVALID;
-
-      return IS_OK;
-
-    } else if(type === 'email'){
-
-      if( validator.isEmpty(value) ) return INVALID;
-      if( value.includes("javascript:") ) return INVALID; // this is too unusual for a mail
-      if( value.includes("data:") ) return INVALID; // this is too unusual for a mail
-      if( !validator.isEmail(value) ) return INVALID;
-
-      return IS_OK;
-
-    } else if(type === 'text'){
-
-      if( validator.isEmpty(value) ) return INVALID;
-      if( value.includes("javascript:") ) return INVALID; // this is too unusual for a text
-      if( value.includes("data:") ) return INVALID; // this is too unusual for a text
-      if( !validator.isAscii(value) ) return INVALID;
-      if( value.match(/[<>=]/) ) return INVALID;
-
-      return IS_OK;
-
-    }else{
-      // Whatever it is, there was no validator for it, it is invalid.
-    }
-
-    return INVALID;
-  }
-
-  async listen() {
-
-    let app = this.app;
-
-    const csrfProtection = csrf({ cookie: {key: this.options.csrfProtectionCookieName} });
-
-    app.use(clientSessions({
-      cookieName: this.options.clientSessionsCookieName,
-      secret: this.options.clientSessionsSecret,
-      duration: 24 * 60 * 60 * 1000, // how long the session will stay valid in ms
-      activeDuration: 1000 * 60 * 5 // if expiresIn < activeDuration, the session will be extended by activeDuration milliseconds
-    }));
-
-    // create application/x-www-form-urlencoded parser
-    const urlencodedParser = body.urlencoded({ extended: true });
-
-    const validUserIsRequired =  async (req, res, next) => {
-      if(!req.userObject){
-        return res.redirect(this.options.links.login);
-      }
-      // Verify that the user is considered to exist.
-      const _id = req.userObject._id;
-      let exists = await userManager.userExists(_id);
-      if(!exists){
-        return res.redirect(this.options.links.login);
-      }
-      next();
-    }
-
-    app.set("view engine", "hbs");
-
-    app.use(cookieParser());
-
-    //app.use(csrf({ cookie: true }))
-
-    //app.use( await this.model.bind(this) );
-
-    this.options.structure.forEach( device => {
-      const args = [device.path];
-      if(device.method === 'post') args.push ( urlencodedParser ) ;
-
-
-    args.push ( async (req, res, next) => {
-      req.userManager = userManager;
-      req.userObject = null;
-
-      req.sessionStateReset = () => {
-        req[this.options.clientSessionsCookieName].reset();
-      };
-
-      if( req[this.options.clientSessionsCookieName] && req[this.options.clientSessionsCookieName].username ){
-          try {
-            let user = await userManager.userGet(req[this.options.clientSessionsCookieName].username);
-            // NOTE: model.user is only set when serManager.userGet is a success.
-            req.userObject = user;
-          } catch(err) {
-            // there was a cooke, but user caused an error, remove cookie.
-            req.sessionStateReset()
-            res.redirect('/');
-          }
-          next();
-        }else{
-          next();
-        }
-      });
-
-
-      if(device.login) args.push ( validUserIsRequired ) ;
-      args.push ( (req, res, next) => {
-
-        const errors = [];
-        let input;
-        if(device.method === 'get') input = req.query;
-        if(device.method === 'post') input = req.body;
-
-        // whitelisted stuff
-        if( device.data ){
-          device.data.forEach(item=>{
-            if(input[item.id]){
-              if( this.isInvalid(item.type, input[item.id]) ){
-                // errors.push(`${device.method}:/${device.path}/${item.id} is invalid.`)
-                errors.push(`Invalid ${item.id.replace(/[^a-zA-Z0-9]/,'x')}`)
-              }else{
-                // perfect!
-              }
-            }else{
-              if(item.required){
-                // errors.push(`${device.method}:/${device.path}/${item.id} is required.`)
-                errors.push(`${capitalize(item.id)} is required`)
-              }else{
-                // item is missing, but it is not required.
-              }
-            }
-          });
-        }
-
-        // eveything else is blacklisted.
-
-
-        Object.keys(input).forEach(item=>{
-          if(device.dataSet && device.dataSet.has(item)){
-            // fantasic!
-          }else{
-
-            if(this.options.production){
-              errors.push(`Request contained data that was not whilelisted.`)
-            }else{
-              let saferName = item.replace(/[^a-zA-Z0-9]/,'_');
-              saferName = xssFilters.inHTMLData(saferName);
-              errors.push(`${saferName} is not allowed.`)
-            }
-
-          }
-        });
-
-        if(errors.length){
-
-          let msg;
-          if(this.options.production){
-            msg = `${errors.length} error${errors.length>1?'s':''} occured during the processing of your request. Please try to correct ${errors.length>1?'them':'it'} and try again. If you feel you received this message in error, please contact support.`;
-          } else {
-            msg = `The following error${errors.length>1?'s':''} occured during the processing of your request: ${errors.join(', ')}. Please correct ${errors.length>1?'them':'it'} and try again. If you feel you received this message in error, please contact support.`;
-          }
-
-          if(device.verbose){
-            return next( new Error(msg) );
-          }else{
-            return res.redirect(this.options.links.home);
-          }
-        }else{
-          next();
-        }
-      });
-      app[device.method].apply(app, args );
-    });
-
-
-    let routeInstaller = [];
-
-    this.options.structure.forEach(async device => {
-
-      routeInstaller.push(new Promise(async (resolve, reject) => {
-
-        const args = [device.path];
-
-        if(device.method === 'post') {
-          args.push (urlencodedParser);
-        }
-
-        if(device.csrf) {
-          args.push (csrfProtection);
-        }
-        if(device.form) {
-          args.push (csrfProtection);
-        }
-
-        if(device.login) args.push ( validUserIsRequired ) ;
-
-        args.push ( async (req, res, next) => {
-          req.state = Object.assign({}, this.options.model);
-          req.state.link  = this.options.links;
-          if(device.values){
-            // scan list of values....
-            const valuePromises = [];
-            device.values.forEach(async valueObject => {
-              valuePromises.push(new Promise(async (resolve, reject) => {
-                // and fetch that value, assigning it to state.
-                req.state[ valueObject.id ] = await this.getValue(Object.assign({},valueObject,{req}));
-                resolve();
-              }));
-            });
-            await Promise.all( valuePromises );
-          }
-          next();
-        });
-
-        if(device.form) {
-          args.push ( async (req, res, next) => {
-            // all pages with forms are given a csrfToken. This is used in forms.
-            req.state.csrfToken = req.csrfToken();
-            next();
-          });
-        }
-
-        let routeInstaller = require(device.module).bind(this);
-        let deviceRoute = await routeInstaller({options:device});
-        args.push( deviceRoute );
-
-         //c-onsole.log(`${device.method}: Mounting ${device.module} on ${device.path}`)
-
-        app[device.method].apply( app, args );
-
-        resolve();
-      }))
-    });
-    await Promise.all( routeInstaller );
-
-    // app.get("/", (req, res) => {
-    //   res.render("index", req.state );
-    // });
+    // Validate All Inputs
+    // Logging and Intrusion Detection
+    middleware.push( denyUndefinedVariables(route) );
+    middleware.push( allowDefinedVariables(route) );
     //
 
-    app.get('*',function (req, res) {
-      res.redirect('/');
-    });
+    // USER //
+    // Identity and Authentication Controls
+    middleware.push( establishAnonymousUser() );
+    middleware.push( upgradeAnonymousUser() );
+    if(route.loginRequired) middleware.push( requireValidUser(route) );
+    // USER //
 
-    app.use(function (err, req, res, next) {
-      res.render("error", Object.assign({}, req.state, {message: err.message} ));
-      res.status(500);
-    });
+    // MODEL //
+    // Appropriate Access Controls
+    middleware.push( createDataModel({conf, route}) ); // prepare the internal data model
+    middleware.push( await populateDataModel({conf, route}) ); // prepare the internal data model
+    middleware.push( installPageLinks(conf) );
+    // MODEL //
 
-    this.app.listen(this.options.port, this.options.host, () => {
-      console.log(`http://${this.options.host}:${this.options.port}/`);
-      if (process.send) process.send('ready');
-    });
+    // ACTION
+    middleware.push( createEventModel(route.handlerEvent) ); // prepare the internal action model
+    // ACTION
 
-  }
+    // EXECUTE
+    const routeModule = await require( path.join(__dirname, 'system', 'handler', route.moduleName) );
+    middleware.push( await routeModule({route}) );
+    // EXECUTE
+
+    app[route.httpVerb].apply( app, middleware );
+
+    resolve(app);
+
+  }));
+
+}));
+
+// All unmatched routes are redirected back to home page
+app.get('*',function (req, res) {
+  console.log('WILDCARD MATCH!!', req.url);
+  // res.redirect('/');
+});
+
+// Error and Exception Handling
+// Logging and Intrusion Detection
+app.use(function (err, req, res, next) {
+
+  // TODO: regexp to remove __dirname
+  let message = err.message;
+  let localPath = path.resolve('./');
+
+  // NETSEC: Sensitive Data Exposure, Local Path Exposure
+  message = message.replace(new RegExp(localPath,'g'),'...');
+
+  // NETSEC: Sensitive Data Exposure, Templating Engine Exposure
+  message = message.replace(new RegExp('.hbs','g'),'');
+
+  res.render("error", Object.assign({}, req.state, {message} ));
+
+  res.status(500);
+});
+
+ return app;
 
 }
 
-module.exports = OnlineMarketplace;
+module.exports = {
+    install: async function(o){
+      const configured = await configure(o);
+      return configured;
+    }
+};
