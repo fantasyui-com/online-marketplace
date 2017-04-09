@@ -1,6 +1,6 @@
 {
   "name": "online-marketplace",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "Simple online marketplace for selling files.",
   "main": "index.js",
   "scripts": {
@@ -33,7 +33,6 @@
     "xss-filters": "^1.2.7"
   },
   "routes": [
-
     {
       "routeName": "home",
       "moduleName": "simple-render",
@@ -46,11 +45,20 @@
       "userTags": [],
       "handlerEvent": [],
       "viewModel": [
-        { "name": "featuredProducts", "module": "featured-products", "begin": 0, "end": 4 },
-        { "name": "popularProducts", "module": "popular-products", "begin": 0, "end": 3 }
+        {
+          "name": "featuredProducts",
+          "module": "featured-products",
+          "begin": 0,
+          "end": 4
+        },
+        {
+          "name": "popularProducts",
+          "module": "popular-products",
+          "begin": 0,
+          "end": 3
+        }
       ]
     },
-
     {
       "routeName": "about",
       "moduleName": "simple-render",
@@ -64,7 +72,6 @@
       "handlerEvent": [],
       "viewModel": []
     },
-
     {
       "routeName": "products",
       "moduleName": "simple-render",
@@ -77,11 +84,12 @@
       "userTags": [],
       "handlerEvent": [],
       "viewModel": [
-        { "name": "browseProducts", "module": "browse-products" }
+        {
+          "name": "browseProducts",
+          "module": "browse-products"
+        }
       ]
     },
-
-
     {
       "routeName": "product",
       "moduleName": "simple-render",
@@ -89,25 +97,35 @@
       "urlPath": "/product/:authorId/:productName",
       "viewId": "product",
       "errorVerbosity": 5,
-
       "dataWhitelist": [
-        { "id":"authorId" },
-        { "id":"productName" }
+        {
+          "id": "authorId"
+        },
+        {
+          "id": "productName"
+        }
       ],
-
       "loginRequired": false,
       "userTags": [],
-
       "handlerEvent": [
-        { "name": "test", "module": "./action/test" }
+        {
+          "name": "test",
+          "module": "./action/test"
+        }
       ],
-
       "viewModel": [
-        { "name": "selectedProduct", "module": "selected-product" },
-        { "name": "relatedProducts", "module": "related-products", "begin": 0, "end": 3 }
+        {
+          "name": "selectedProduct",
+          "module": "selected-product"
+        },
+        {
+          "name": "relatedProducts",
+          "module": "related-products",
+          "begin": 0,
+          "end": 3
+        }
       ]
     },
-
     {
       "routeName": "purchases",
       "moduleName": "simple-render",
@@ -121,11 +139,13 @@
         "!banned"
       ],
       "handlerEvent": [
-        { "id": "test", "module": "./action/test" }
+        {
+          "id": "test",
+          "module": "./action/test"
+        }
       ],
       "viewModel": []
     },
-
     {
       "routeName": "account",
       "moduleName": "simple-render",
