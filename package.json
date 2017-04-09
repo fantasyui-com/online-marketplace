@@ -1,35 +1,27 @@
 {
   "name": "online-marketplace",
-  "version": "2.0.0",
-
+  "version": "2.0.1",
   "description": "Simple online marketplace for selling files.",
   "main": "index.js",
-
   "scripts": {
     "test": "mocha"
   },
-
   "config": {
     "host": "0.0.0.0",
     "port": "3000"
   },
-
   "repository": {
     "type": "git",
     "url": "git+https://github.com/fantasyui-com/online-marketplace.git"
   },
-
   "keywords": [],
   "author": "Captain Fantasy <fantasyui.com@gmail.com> (http://fantasyui.com)",
   "license": "GPL-3.0",
   "bugs": {
     "url": "https://github.com/fantasyui-com/online-marketplace/issues"
   },
-
   "homepage": "https://github.com/fantasyui-com/online-marketplace#readme",
-
   "dependencies": {
-
     "body-parser": "^1.17.1",
     "express": "^4.15.2",
     "hbs": "^4.0.1",
@@ -38,9 +30,7 @@
     "mocha": "^3.2.0",
     "product-catalog": "^1.0.4",
     "xss-filters": "^1.2.7"
-
   },
-
   "routes": [
     {
       "routeName": "home",
@@ -116,5 +106,4 @@
       "viewModel": []
     }
   ]
-  
 }
