@@ -1,6 +1,15 @@
 # online-marketplace
 A simple and secure online marketplace for selling files.
 
+![Opening Intro](screenshots/a.jpg "Opening Intro")
+
+![Product Layout](screenshots/b.jpg "Product Layout")
+
+![Product Details](screenshots/c.jpg "Product
+ Details")
+ 
+![Licensing](screenshots/d.jpg "Licensing")
+
 ## Theory of Operation
 
 - Customer Privacy and Server Security first.
