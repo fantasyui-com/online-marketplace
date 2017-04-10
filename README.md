@@ -11,6 +11,21 @@ A simple and secure online marketplace for selling files.
 - Simple product catalog (package.json format) see [product-catalog](https://github.com/fantasyui-com/product-catalog).
 - Potential for serving static pages (generate from live and serve via static)
 
+## Installation
+
+```sh
+
+mkdir my-online-marketplace
+cd my-online-marketplace/
+git clone https://github.com/fantasyui-com/online-marketplace.git .
+npm i
+npm start
+
+```
+
+at this point you will see [http://0.0.0.0:3000/](http://0.0.0.0:3000/)
+navigate to the address to view the homepage.
+
 
 ## Start Server
 
