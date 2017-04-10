@@ -15,15 +15,12 @@ const marked = require('marked');
 const renderer = new marked.Renderer();
 
 renderer.heading = function (text, level) {
-  var escapedText = text.toLowerCase().replace(/[^\w]+/g, '-');
-
   var primary = text.split(":")[0]
   var secondary = text.split(":")[1]||"";
   var anchor = kebabCase(primary);
-
-  return `<a name="${escapedText}"><h${level} class="mt-3 py-3">${primary} <small class="text-muted">${secondary}</small></h${level}>`;
-
+  return `<a name="${anchor}"><h${level} class="mt-3 py-3">${primary} <small class="text-muted">${secondary}</small></h${level}>`;
 }
+
 // renderer.listitem = function (text) {
 //   var escapedText = text.toLowerCase().replace(/[^\w]+/g, '-');
 //     return `<li class="small">${text}</li>`
