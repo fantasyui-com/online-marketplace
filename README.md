@@ -7,7 +7,7 @@ A simple and secure online marketplace for selling files.
 
 ![Product Details](screenshots/c.jpg "Product
  Details")
- 
+
 ![Licensing](screenshots/d.jpg "Licensing")
 
 ## Theory of Operation

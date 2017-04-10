@@ -13,6 +13,8 @@ module.exports = function({routes}){
       version: pkg.version,
       license: pkg.license,
 
+      stripePublishableKey: process.env.STRIPE_PUBLISHABLE_KEY||'pk_test_6pRNASCoBOKtIshFeQd4XMUh',
+
     };
 
     next();

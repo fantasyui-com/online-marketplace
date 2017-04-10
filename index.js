@@ -1,6 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 
+
 // Only JSON is allowed, only via local, Cross-origin resource sharing is not allowed/implemented.
 const jsonParser = require("body-parser").json();
 
@@ -39,6 +40,13 @@ hbs.registerHelper('inUnQuotedAttr', function(str) { return xssFilters.inUnQuote
 
 const express = require('express');
 const app = express();
+
+//NOTE: withut proper variables the system drops into test mode.
+//NOTE: to run with keys: $> STRIPE_PUBLISHABLE_KEY=pk_test_6pRNASCoBOKtIshFeQd4XMUh STRIPE_SECRET_KEY=sk_test_BQokikJOvBiI2HlWgH4olfQ2 node app.js
+const keyPublishable = process.env.STRIPE_PUBLISHABLE_KEY||'pk_test_6pRNASCoBOKtIshFeQd4XMUh';
+const keySecret = process.env.STRIPE_SECRET_KEY||'sk_test_BQokikJOvBiI2HlWgH4olfQ2';
+
+const stripe = require("stripe")(keySecret);
 
 app.set('views', [ path.join(__dirname, 'system', 'view') ]);
 app.set("view engine", "hbs");

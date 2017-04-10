@@ -32,6 +32,7 @@
     "marked": "^0.3.6",
     "mocha": "^3.2.0",
     "product-catalog": "^1.0.4",
+    "stripe": "^4.17.1",
     "xss-filters": "^1.2.7"
   },
   "routes": [
