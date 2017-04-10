@@ -9,22 +9,25 @@ const hbs = require('hbs');
 hbs.registerPartials( path.join(__dirname, 'system', 'view', 'partials') );
 hbs.registerPartials( path.join(__dirname, 'system', 'view', 'cards') );
 
+const kebabCase = require('lodash/kebabCase');
 const marked = require('marked');
 
 const renderer = new marked.Renderer();
 
 renderer.heading = function (text, level) {
   var escapedText = text.toLowerCase().replace(/[^\w]+/g, '-');
-  if(level<3){
-    return `<h${level} class="display-4 py-3"><a name="${escapedText}" class="anchor" href="#${escapedText}"><span class="header-link"></span></a>${text}</h${level}>`
-  }else{
-    return `<h${level} class="py-3"><a name="${escapedText}" class="anchor" href="#${escapedText}"><span class="header-link"></span></a>${text}</h${level}>`
-  }
+
+  var primary = text.split(":")[0]
+  var secondary = text.split(":")[1]||"";
+  var anchor = kebabCase(primary);
+
+  return `<a name="${escapedText}"><h${level} class="mt-3 py-3">${primary} <small class="text-muted">${secondary}</small></h${level}>`;
+
 }
-renderer.listitem = function (text) {
-  var escapedText = text.toLowerCase().replace(/[^\w]+/g, '-');
-    return `<li class="small">${text}</li>`
-}
+// renderer.listitem = function (text) {
+//   var escapedText = text.toLowerCase().replace(/[^\w]+/g, '-');
+//     return `<li class="small">${text}</li>`
+// }
 
 marked.setOptions({
   renderer

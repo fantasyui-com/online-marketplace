@@ -2,6 +2,13 @@
   <div class="card-header">{{inHTMLData selectedProduct.title}}</div>
   <img class="card-img-top img-fluid" src="{{inDoubleQuotedAttr selectedProduct.screenshot}}" alt="{{inDoubleQuotedAttr selectedProduct.title}} Screenshot">
   <div class="card-block">
-    <p class="card-text">{{inHTMLData selectedProduct.description}}</p>
+
+    <p class="card-text lead">{{inHTMLData selectedProduct.description}}</p>
+    <p class="card-text">
+      {{#each selectedProduct.tags}}
+        <span class="badge badge-pill badge-default small" style="font-weight: 100;">{{this}}</span> 
+      {{~/each}}
+    </p>
+
   </div>
 </div>
