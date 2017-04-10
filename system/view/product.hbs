@@ -7,6 +7,20 @@
 
 {{> subtitle title=selectedProduct.title text=selectedProduct.description}}
 
+{{#if selectedProduct.screenshots}}
+  <div class="container py-3">
+    <div class="row">
+      {{#each selectedProduct.screenshots}}
+        <div class="col-md-4 p-3">
+          <div class="card">
+            <img class="card-img-top img-fluid" src="{{inDoubleQuotedAttr this}}" alt="{{inDoubleQuotedAttr selectedProduct.title}} Screenshot">
+          </div>
+        </div>
+      {{~/each}}
+    </div>
+  </div>
+{{/if}}
+
 <div class="container py-3">
   <div class="row">
 
@@ -32,7 +46,7 @@
         <div class="card mb-3">
           <div class="card-block">
             <a href="{{inDoubleQuotedAttr selectedProduct.demo}}" class="btn btn-info btn-block">Live Preview</a>
-            <p class="card-text text-muted text-center px-3 mx-3 small">Preview live {{inHTMLData selectedProduct.title}} in full prior to purchase.</p>
+            <p class="card-text text-muted text-center px-3 mx-3 small">Preview {{inHTMLData selectedProduct.title}} in full prior to purchase.</p>
           </div>
         </div>
 
@@ -70,13 +84,21 @@
 
                     <div class="col-4 p-3"><span class="small text-muted">{{inHTMLData type}}:</span></div>
                     <div class="col-8 p-3 text-right">
-                      <a href="#" class="btn btn-info btn-sm btn-block">${{inHTMLData price}}</a>
+                      <a href="#" class="btn btn-info btn-sm btn-block"><i class="fa fa-fw fa-cc-stripe"></i> ${{inHTMLData price}}</a>
                     </div>
 
                 </div>
               {{~/each}}
             </div>
+            <div class="card-block small">
+              <i class="fa fa-fw fa-info"></i>
+              We value your <a href="{{inDoubleQuotedAttr link.about}}#privacy">Privacy</a> and
+              Online <a href="{{inDoubleQuotedAttr link.about}}#security">Safety</a>.
+              Find out more about <a href="{{inDoubleQuotedAttr link.about}}#licenses">Licenses</a>,
+              <a href="{{inDoubleQuotedAttr link.about}}#legal">Terms of service</a> and
+              <a href="{{inDoubleQuotedAttr link.about}}">{{inHTMLData title}}</a>.
 
+            </div>
         </div>
 
       </div>
@@ -84,20 +106,7 @@
   </div>
 </div>
 
-{{#if selectedProduct.screenshots}}
-  {{> subtitle title="Product Screenshots" text="Additional product screenshots"}}
-  <div class="container py-3">
-    <div class="row">
-      {{#each selectedProduct.screenshots}}
-        <div class="col-md-4 p-3">
-          <div class="card">
-            <img class="card-img-top img-fluid" src="{{inDoubleQuotedAttr this}}" alt="{{inDoubleQuotedAttr selectedProduct.title}} Screenshot">
-          </div>
-        </div>
-      {{~/each}}
-    </div>
-  </div>
-{{/if}}
+
 
 {{> subtitle title="Related Products" text="Products you might also be interested in."}}
 
