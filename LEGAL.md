@@ -3,26 +3,26 @@ Simple License Agreements
 
 ###### Free License
 
-- Must modify to create a product significantly different.
+- Must modify to create a significantly different product.
 - Use in one project only.
 - May not resell, for your use only.
 - Free is the same as standard, but the fee has been waived.
 
 ###### Standard License
 
-- Must modify to create a product significantly different.
+- Must modify to create a significantly different product.
 - Use in one project.
 - May not resell, for your use only.
 
 ###### Multiuse License
 
-- Must modify to create a product significantly different from the original Item.
+- Must modify to create a significantly different product.
 - Use in up-to 500 projects (if working on freelance project or contract work that will be sold multiple times down the road, you need to account for each sale, or purchase the extended license.).
 - May not resell, for your use only.
 
 ###### Extended License
 
-- Must modify to create a product significantly different.
+- Must modify to create a significantly different product.
 - Unlimited use.
 - May not resell, for your use only.
 
