@@ -17,7 +17,7 @@ Simple License Agreements
 ###### Multiuse License
 
 - Must modify to create a significantly different product.
-- Use in up-to 500 projects (if working on freelance project or contract work that will be sold multiple times down the road, you need to account for each sale, or purchase the extended license.).
+- Use in up-to 100 projects (if working on freelance project or contract work that will be sold multiple times down the road, you need to account for each sale, or purchase the extended license.).
 - May not resell, for your use only.
 
 ###### Extended License
