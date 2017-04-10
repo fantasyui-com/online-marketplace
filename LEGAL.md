@@ -3,14 +3,14 @@ Simple License Agreements
 
 ###### Free License
 
-- Must modify to create a product significantly different from the original Item.
+- Must modify to create a product significantly different.
 - Use in one project only.
 - May not resell, for your use only.
 - Free is the same as standard, but the fee has been waived.
 
 ###### Standard License
 
-- Must modify to create a product significantly different from the original Item.
+- Must modify to create a product significantly different.
 - Use in one project.
 - May not resell, for your use only.
 
@@ -22,7 +22,7 @@ Simple License Agreements
 
 ###### Extended License
 
-- Must modify to create a product significantly different from the original Item.
+- Must modify to create a product significantly different.
 - Unlimited use.
 - May not resell, for your use only.
 
