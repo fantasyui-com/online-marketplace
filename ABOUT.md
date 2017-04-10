@@ -1,3 +1,13 @@
+# About: Fantasy Marketplace
+
+Trustworthy, Open, Safe and Secure. Fantastic Online Marketplace: Build amazing things, join the sustainable lightweight design revolution.
+
+Designed and built with all the <i class="fa fa-fw fa-heartbeat text-danger"></i> and <i class="fa fa-fw fa-bolt text-warning"></i> in the world by [Captain Fantasy](https://github.com/fantasyui-com) and [fantasyui.com](http://fantasyui.com).
+
+Maintained at [fantasyui-com/online-marketplace](https://github.com/fantasyui-com/online-marketplace) with the help of [our contributors](https://github.com/fantasyui-com/online-marketplace/graphs/contributors).
+
+Code licensed [GPL-3.0](https://github.com/fantasyui-com/online-marketplace/blob/master/LICENSE), docs [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/).
+
 ## Licenses: Simple License Agreements
 
 #### Free License

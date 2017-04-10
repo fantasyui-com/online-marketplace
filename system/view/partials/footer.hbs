@@ -6,8 +6,6 @@
 
         <p class="lead">About</p>
         <ul class="p-1 list-unstyled">
-          <li class="p-1"><i class="fa pr-3 fa-fw fa-question-circle"></i> <a href="{{inDoubleQuotedAttr link.about}}">{{inHTMLData title}}</a></li>
-          <li class="p-1"><i class="fa pr-3 fa-fw fa-legal"></i> <a href="{{inDoubleQuotedAttr link.about}}#legal">Legal</a></li>
           <li class="p-1"><i class="fa pr-3 fa-fw fa-id-card-o"></i> <a href="{{inDoubleQuotedAttr link.about}}#licenses">Licenses</a></li>
           <li class="p-1"><i class="fa pr-3 fa-fw fa-money"></i> <a href="{{inDoubleQuotedAttr link.about}}#refunds">Refunds</a></li>
           <li class="p-1"><i class="fa pr-3 fa-fw fa-lock"></i> <a href="{{inDoubleQuotedAttr link.about}}#privacy">Privacy</a></li>
@@ -29,9 +27,13 @@
       <div class="col p-3">
 
         <p class="lead">{{inHTMLData title}}</p>
-        <p class="p-3">
-          {{> info}}
-        </p>
+        <ul class="p-1 list-unstyled">
+          <li class="p-1"><i class="fa pr-3 fa-fw fa-home"></i> <a href="{{inDoubleQuotedAttr link.home}}">Home</a></li>
+          <li class="p-1"><i class="fa pr-3 fa-fw fa-question-circle"></i> <a href="{{inDoubleQuotedAttr link.about}}">{{inHTMLData title}}</a></li>
+          <li class="p-1"><i class="fa pr-3 fa-fw fa-th"></i> <a href="{{inDoubleQuotedAttr link.products}}">Products</a></li>
+
+        </ul>
+        <small>{{inHTMLData description }}</small>
 
       </div>
 

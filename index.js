@@ -18,13 +18,26 @@ renderer.heading = function (text, level) {
   var primary = text.split(":")[0]
   var secondary = text.split(":")[1]||"";
   var anchor = kebabCase(primary);
-  return `<a name="${anchor}"><h${level} class="mt-3 py-3">${primary} <small class="text-muted">${secondary}</small></h${level}>`;
+  var display = "";
+
+  if(level<3){
+    display = 'display-4';
+  }
+  //return `<a name="${anchor}"><h${level} class="mt-3 py-3">${primary} <small class="text-muted">${secondary}</small></h${level}>`;
+  return `
+  <a name="${anchor}">
+  <h${level} class="${display}" style="padding-top: 6rem; padding-bottom: 3rem;">${primary} <span class="lead text-muted"> ${secondary} </span> </h${level}>
+  `;
 }
 
-// renderer.listitem = function (text) {
-//   var escapedText = text.toLowerCase().replace(/[^\w]+/g, '-');
-//     return `<li class="small">${text}</li>`
-// }
+renderer.listitem = function (text) {
+  var escapedText = text.toLowerCase().replace(/[^\w]+/g, '-');
+    return `<li class="pb-2">${text}</li>`
+}
+
+renderer.paragraph = function (text) {
+  return `<p class="lead">${text}</p>`
+}
 
 marked.setOptions({
   renderer
@@ -32,7 +45,7 @@ marked.setOptions({
 
 const xssFilters = require('xss-filters');
 console.log(  )
-hbs.registerHelper('legal', function(str) { return marked( fs.readFileSync(path.join(__dirname,'LEGAL.md')).toString() ) });
+hbs.registerHelper('about', function(str) { return marked( fs.readFileSync(path.join(__dirname,'ABOUT.md')).toString() ) });
 hbs.registerHelper('inHTMLData', function(str) { return xssFilters.inHTMLData(str); });
 hbs.registerHelper('inSingleQuotedAttr', function(str) { return xssFilters.inSingleQuotedAttr(str); });
 hbs.registerHelper('inDoubleQuotedAttr', function(str) { return xssFilters.inDoubleQuotedAttr(str); });
