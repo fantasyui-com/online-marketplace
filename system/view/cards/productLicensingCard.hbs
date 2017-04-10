@@ -1,0 +1,25 @@
+<div class="card">
+  <div class="card-header">Licensing Options</div>
+
+    <div class="container-fluid p-3">
+      {{#each selectedProduct.licensing}}
+        <div class="row">
+
+            <div class="col-4 p-3"><span class="small text-muted">{{inHTMLData type}}:</span></div>
+            <div class="col-8 p-3 text-right">
+              <a href="#" class="btn btn-info btn-sm btn-block"><i class="fa fa-fw fa-cc-stripe"></i> ${{inHTMLData price}}</a>
+            </div>
+
+        </div>
+      {{~/each}}
+    </div>
+    <div class="card-block small">
+      <i class="fa fa-fw fa-info"></i>
+      We value your <a href="{{inDoubleQuotedAttr link.about}}#privacy">Privacy</a> and
+      Online <a href="{{inDoubleQuotedAttr link.about}}#security">Safety</a>.
+      Find out more about <a href="{{inDoubleQuotedAttr link.about}}#licenses">Licenses</a>,
+      <a href="{{inDoubleQuotedAttr link.about}}#legal">Terms of service</a> and
+      <a href="{{inDoubleQuotedAttr link.about}}">{{inHTMLData title}}</a>.
+
+    </div>
+</div>

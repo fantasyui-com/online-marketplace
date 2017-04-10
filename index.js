@@ -1,3 +1,4 @@
+const fs = require("fs");
 const path = require("path");
 
 // Only JSON is allowed, only via local, Cross-origin resource sharing is not allowed/implemented.
@@ -7,8 +8,30 @@ const hbs = require('hbs');
 hbs.registerPartials( path.join(__dirname, 'system', 'view', 'partials') );
 hbs.registerPartials( path.join(__dirname, 'system', 'view', 'cards') );
 
-const xssFilters = require('xss-filters');
+const marked = require('marked');
 
+const renderer = new marked.Renderer();
+
+renderer.heading = function (text, level) {
+  var escapedText = text.toLowerCase().replace(/[^\w]+/g, '-');
+  if(level<3){
+    return `<h${level} class="display-4 py-3"><a name="${escapedText}" class="anchor" href="#${escapedText}"><span class="header-link"></span></a>${text}</h${level}>`
+  }else{
+    return `<h${level} class="py-3"><a name="${escapedText}" class="anchor" href="#${escapedText}"><span class="header-link"></span></a>${text}</h${level}>`
+  }
+}
+renderer.listitem = function (text) {
+  var escapedText = text.toLowerCase().replace(/[^\w]+/g, '-');
+    return `<li class="small">${text}</li>`
+}
+
+marked.setOptions({
+  renderer
+});
+
+const xssFilters = require('xss-filters');
+console.log(  )
+hbs.registerHelper('legal', function(str) { return marked( fs.readFileSync(path.join(__dirname,'LEGAL.md')).toString() ) });
 hbs.registerHelper('inHTMLData', function(str) { return xssFilters.inHTMLData(str); });
 hbs.registerHelper('inSingleQuotedAttr', function(str) { return xssFilters.inSingleQuotedAttr(str); });
 hbs.registerHelper('inDoubleQuotedAttr', function(str) { return xssFilters.inDoubleQuotedAttr(str); });

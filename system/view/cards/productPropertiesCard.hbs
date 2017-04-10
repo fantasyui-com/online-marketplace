@@ -1,0 +1,17 @@
+<div class="card mb-3">
+  <div class="card-header">{{inHTMLData selectedProduct.title}} Properties</div>
+
+  <table class="table table-sm table-striped">
+    <tbody>
+
+      {{#each selectedProduct.properties}}
+      <tr>
+        <td class="w-50"><span class="small text-muted">{{inHTMLData label}}</span></td>
+        <td class="w-50"><span class="small">{{inHTMLData text}}</span></td>
+      </tr>
+      {{~/each}}
+
+    </tbody>
+  </table>
+
+</div>
