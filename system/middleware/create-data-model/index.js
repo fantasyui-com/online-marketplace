@@ -6,8 +6,8 @@ module.exports = function({routes}){
 
     req.model = {
 
-      title: `Fantasy Marketplace`,
-      description: `A Fantastic Online Marketplace: Build amazing things, join the sustainable lightweight design revolution.`,
+      title: pkg.title,
+      description: pkg.description,
       author:  pkg.author,
       program: pkg.name,
       version: pkg.version,

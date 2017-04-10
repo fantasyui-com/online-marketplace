@@ -32,7 +32,17 @@ npm update;
 
 ```
 
-## Tests
+## Development
+
+Clone repository, install supervisor ```npm install -G supervisor``` and then:
+
+```sh
+
+npm run watch;
+
+```
+
+## Running Tests
 
 Test system uses mocha.
 

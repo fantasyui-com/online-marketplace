@@ -2,36 +2,36 @@
   <div class="container-fluid">
     <div class="row">
 
-      <div class="col-xs-3 col-md-4 col-lg-3 p-3">
-        <ul class="p-3 list-unstyled">
-          <li><i class="fa fa-fw fa-question-circle"></i><a class="btn btn-sm btn-link" href="{{inDoubleQuotedAttr link.about}}">About</a></li>
+      <div class="col-sm-6 col-md-3 col-md-4 col-lg-3 p-3">
+
+        <div class="h3 display-4">About</div>
+        <ul class="p-1 list-unstyled">
+          <li class="pl-3"><i class="fa fa-fw fa-question-circle"></i><a class="btn btn-sm btn-link" href="{{inDoubleQuotedAttr link.about}}">{{inHTMLData title}}</a></li>
+          <li class="pl-3"><i class="fa fa-fw fa-legal"></i><a class="btn btn-sm btn-link" href="{{inDoubleQuotedAttr link.about}}#legal">Legal</a></li>
+          <li class="pl-3"><i class="fa fa-fw fa-id-card-o"></i><a class="btn btn-sm btn-link" href="{{inDoubleQuotedAttr link.about}}#licenses">Licenses</a></li>
+          <li class="pl-3"><i class="fa fa-fw fa-money"></i><a class="btn btn-sm btn-link" href="{{inDoubleQuotedAttr link.about}}#refunds">Refunds</a></li>
+          <li class="pl-3"><i class="fa fa-fw fa-lock"></i><a class="btn btn-sm btn-link" href="{{inDoubleQuotedAttr link.about}}#privacy">Privacy</a></li>
+        </ul>
+
+      </div>
+
+      <div class="col-sm-6 col-md-3 col-md-4 col-lg-3 p-3">
+
+        <div class="h3 display-4">Network</div>
+        <ul class="p-1 list-unstyled">
           <li class="pl-3"><i class="fa fa-fw fa-github"></i><a class="btn btn-sm btn-link" href="https://github.com/fantasyui-com">GitHub</a></li>
           <li class="pl-3"><i class="fa fa-fw fa-twitter"></i><a class="btn btn-sm btn-link" href="https://twitter.com/fantasyui_com">Twitter</a></li>
           <li class="pl-3"><i class="fa fa-fw fa-tag"></i><a class="btn btn-sm btn-link" href="https://creativemarket.com/fantasyui.com/">Creativemarket</a></li>
-          <li><i class="fa fa-fw fa-legal"></i><a class="btn btn-sm btn-link" href="{{inDoubleQuotedAttr link.about}}#legal">Legal</a></li>
-          <li><i class="fa fa-fw fa-money"></i><a class="btn btn-sm btn-link" href="{{inDoubleQuotedAttr link.about}}#refunds">Refunds</a></li>
         </ul>
+
       </div>
 
       <div class="col p-3">
 
         <h6 class="display-4">{{inHTMLData title}}</h6>
-        <p>{{inHTMLData description }}</p>
 
-        <p class="small p-3">
-          Designed and built with all the might in the world by
-          <a class="text-warning" href="https://github.com/fantasyui-com">Captain Fantasy</a> and
-          <a class="text-warning" href="http://fantasyui.com">fantasyui.com</a>.
-          Maintained at <a class="text-warning" href="https://github.com/fantasyui-com/online-marketplace">fantasyui-com/online-marketplace</a> with the help of
-          <a class="text-warning" href="https://github.com/fantasyui-com/online-marketplace/graphs/contributors">our contributors</a>.
-        </p>
-
-        <p class="small p-3">
-
-          Code behind <a class="text-warning" href="https://github.com/fantasyui-com/online-marketplace">{{inHTMLData program}}</a> is currently at <span class="text-warning">{{inHTMLData version}}</span>
-          Code licensed <a rel="license" class="text-warning" href="https://github.com/fantasyui-com/online-marketplace/blob/master/LICENSE">{{inHTMLData license}}</a>,
-          docs <a rel="license" class="text-warning" href="https://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.
-
+        <p class="lead p-3">
+          {{> info}}
         </p>
 
       </div>
