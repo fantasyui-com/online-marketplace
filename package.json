@@ -1,7 +1,7 @@
 {
   "title": "Fantasy Marketplace",
   "name": "online-marketplace",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "Smart, trustworthy, open, safe and secure. Build amazing things and join the sustainable lightweight design revolution.",
   "main": "index.js",
   "scripts": {
@@ -42,9 +42,6 @@
       "urlPath": "/",
       "viewId": "index",
       "errorVerbosity": 5,
-
-
-
       "handlerEvent": [],
       "viewModel": [
         {
@@ -61,7 +58,6 @@
         }
       ]
     },
-
     {
       "routeName": "about",
       "moduleName": "simple-render",
@@ -69,13 +65,9 @@
       "urlPath": "/about",
       "viewId": "about",
       "errorVerbosity": 5,
-
-
-
       "handlerEvent": [],
       "viewModel": []
     },
-
     {
       "routeName": "products",
       "moduleName": "simple-render",
@@ -83,9 +75,6 @@
       "urlPath": "/products",
       "viewId": "products",
       "errorVerbosity": 5,
-
-
-
       "handlerEvent": [],
       "viewModel": [
         {
@@ -94,8 +83,6 @@
         }
       ]
     },
-
-
     {
       "routeName": "product",
       "moduleName": "simple-render",
@@ -111,8 +98,6 @@
           "id": "productName"
         }
       ],
-
-
       "handlerEvent": [
         {
           "name": "test",
@@ -132,8 +117,6 @@
         }
       ]
     },
-
-
     {
       "routeName": "charge",
       "moduleName": "stripe-charge",
@@ -144,7 +127,6 @@
       "handlerEvent": [],
       "viewModel": []
     },
-
     {
       "routeName": "download",
       "moduleName": "download-file",
@@ -154,6 +136,5 @@
       "handlerEvent": [],
       "viewModel": []
     }
-
   ]
 }
