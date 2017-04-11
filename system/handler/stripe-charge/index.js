@@ -27,7 +27,6 @@ module.exports = async function({route}){
       };
 
       let chargeCreated = await stripe.charges.create(chargeObject);
-      console.log('chargeCreated object', chargeCreated)
 
       let shasum = crypto.createHash('sha1');
       shasum.update([ customerObject.email, productObject.name, productLicense.type, downloadKeySecret].join("::"));
@@ -41,8 +40,10 @@ module.exports = async function({route}){
       res.render(route.viewId, req.model);
 
     } catch(err){
+
       res.render("error", {message: err.message} );
       res.status(500);
+      
     }
 
   }

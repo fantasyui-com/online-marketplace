@@ -26,7 +26,7 @@ module.exports = function(str){
     throw new Error('Malformed productLicenseName');
   }
 
-  let licenseIdLookup = { Standard:0, Multiuse:1, Extended:2 };
+  let licenseIdLookup = { standard:0, multiuse:1, extended:2 };
   let productLicenseId = licenseIdLookup[productLicenseName];
 
   if(productLicenseId === undefined){
