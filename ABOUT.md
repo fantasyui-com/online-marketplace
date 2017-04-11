@@ -78,3 +78,11 @@ Code licensed [GPL-3.0](https://github.com/fantasyui-com/online-marketplace/blob
 
 0. This program and content contained within including legal terms come with ABSOLUTELY NO WARRANTY;
 0. This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+## Support: We Care About Your Shopping Experience.
+
+Our website uses [fantasyui-com/online-marketplace](https://github.com/fantasyui-com/online-marketplace) to ensure your security by minimizing collection of information that hackers may find useful or worth stealing.
+
+By removing all non-essential server features, and eliminating metadata storage we solve many complex problems before they start. We use simple email for communication, support, refunds, and other matters.
+
+Please contact us at <a class="e-mail"></a> we'll get back to you as soon as possible.

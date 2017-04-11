@@ -127,46 +127,7 @@
           "end": 3
         }
       ]
-    },
-    {
-      "routeName": "purchases",
-      "moduleName": "simple-render",
-      "httpVerb": "get",
-      "urlPath": "/purchases",
-      "viewId": "purchases",
-      "errorVerbosity": 5,
-      "dataWhitelist": [],
-      "loginRequired": false,
-      "userTags": [
-        "!banned"
-      ],
-      "handlerEvent": [
-        {
-          "id": "test",
-          "module": "./action/test"
-        }
-      ],
-      "viewModel": []
-    },
-    {
-      "routeName": "account",
-      "moduleName": "simple-render",
-      "httpVerb": "get",
-      "urlPath": "/account",
-      "viewId": "account",
-      "errorVerbosity": 5,
-      "dataWhitelist": [],
-      "loginRequired": false,
-      "userTags": [
-        "!banned"
-      ],
-      "handlerEvent": [
-        {
-          "id": "test",
-          "module": "./action/test"
-        }
-      ],
-      "viewModel": []
     }
+
   ]
 }

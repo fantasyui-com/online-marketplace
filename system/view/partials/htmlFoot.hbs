@@ -30,7 +30,16 @@
 
   });
 
+  $(function(){
 
+    $('.e-mail').text('Email Support').attr('href',"#support").click( function(e) {
+      var id = "e`ms`rxth-bnl".split("").map(function(i){return i.charCodeAt(0)+1}).map(function(i){return String.fromCharCode(i)}).join("");
+      var tld = "fl`hk-bnl".split("").map(function(i){return i.charCodeAt(0)+1}).map(function(i){return String.fromCharCode(i)}).join("");
+      location.href = encodeURI("mailto:"+id+String.fromCharCode(Math.pow(8,2))+tld+"?subject=Support");
+    });
+
+
+  });
 
 
 </script>
