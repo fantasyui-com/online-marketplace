@@ -1,11 +1,9 @@
 # Todo
 
-- Phase 1
-  - /download route (email+product hash)
-  - /charge route (this is the Stripe backend)
-
-- Phase 2
-  - HTTPS
-  - More Mocha Tests
-  - pm2 tests
-  - Easy Deploy Buttons
+- Main Goals
+  - HTTPS via (Let's Encrypt - Free SSL/TLS Certificates)
+- Extras
+  - pm2 usage examples
+  - automated support for old download keys (for when a download key is compromised).
+  - more Mocha Tests
+  - easy Deploy Buttons

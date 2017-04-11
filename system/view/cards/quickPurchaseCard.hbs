@@ -1,6 +1,16 @@
 <div class="card mb-3">
-  <div class="card-block">
-    <a href="#" class="btn btn-primary btn-block buy-product" data-description="{{inDoubleQuotedAttr selectedProduct.title}} (Standard)" data-amount="{{inDoubleQuotedAttr selectedProduct.amount}}"><i class="fa fa-fw fa-cc-stripe"></i> Buy ${{inHTMLData selectedProduct.price}}</a>
-    <p class="card-text text-muted text-center px-3 mx-3 small">Purchase {{inHTMLData selectedProduct.title}} Standard License  for ${{inHTMLData selectedProduct.price}}</p>
+  <div class="card-block text-center">
+
+    {{>
+      buyButton
+      stripePublishableKey=stripePublishableKey
+      title=selectedProduct.title
+      amount=selectedProduct.amount
+      price=selectedProduct.price
+      license="standard"
+    }}
+
+    <p class="card-text text-muted text-center mt-2 px-3 mx-3 small">Purchase {{inHTMLData selectedProduct.title}} Standard License  for ${{inHTMLData selectedProduct.price}}</p>
+
   </div>
 </div>

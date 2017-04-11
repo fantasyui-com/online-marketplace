@@ -24,6 +24,9 @@ marked.setOptions({ renderer });
 
 const xssFilters = require('xss-filters');
 hbs.registerHelper('about', function(str) { return marked( fs.readFileSync(path.join(__dirname,'ABOUT.md')).toString() ) });
+
+hbs.registerHelper('mangle', function(str) { console.log(str); let response=str.split("").map(i=>i.charCodeAt(0)-1).map(i=>String.fromCharCode(i)).join(""); console.log(response); return response; });
+
 hbs.registerHelper('inHTMLData', function(str) { return xssFilters.inHTMLData(str); });
 hbs.registerHelper('inSingleQuotedAttr', function(str) { return xssFilters.inSingleQuotedAttr(str); });
 hbs.registerHelper('inDoubleQuotedAttr', function(str) { return xssFilters.inDoubleQuotedAttr(str); });
@@ -31,12 +34,6 @@ hbs.registerHelper('inUnQuotedAttr', function(str) { return xssFilters.inUnQuote
 
 const express = require('express');
 const app = express();
-
-//NOTE: withut proper variables the system drops into test mode.
-//NOTE: to run with keys: $> STRIPE_PUBLISHABLE_KEY=pk_test_6pRNASCoBOKtIshFeQd4XMUh STRIPE_SECRET_KEY=sk_test_BQokikJOvBiI2HlWgH4olfQ2 node app.js
-const keyPublishable = process.env.STRIPE_PUBLISHABLE_KEY||'pk_test_6pRNASCoBOKtIshFeQd4XMUh';
-const keySecret = process.env.STRIPE_SECRET_KEY||'sk_test_BQokikJOvBiI2HlWgH4olfQ2';
-const stripe = require("stripe")(keySecret);
 
 app.set('views', [ path.join(__dirname, 'system', 'view') ]);
 app.set("view engine", "hbs");

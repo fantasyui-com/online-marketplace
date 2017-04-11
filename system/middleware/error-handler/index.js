@@ -1,3 +1,5 @@
+const path = require('path');
+
 module.exports = async function({app,conf}) {
   app.use(function (err, req, res, next) {
     console.log('Error:', err)

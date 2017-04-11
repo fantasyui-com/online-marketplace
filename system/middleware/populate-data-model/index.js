@@ -18,8 +18,8 @@ module.exports = async function ({ route }) {
 
         }))
       }));
-      console.log("\n\n",route.routeName)
-      console.log(req.model)
+
+
       next();
 
     } catch (err) {

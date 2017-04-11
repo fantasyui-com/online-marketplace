@@ -85,4 +85,4 @@ Our website uses [fantasyui-com/online-marketplace](https://github.com/fantasyui
 
 By removing all non-essential server features, and eliminating metadata storage we solve many complex problems before they start. We use simple email for communication, support, refunds, and other matters.
 
-Please contact us at <a class="e-mail"></a> we'll get back to you as soon as possible.
+Please <a class="e-mail">contact us</a> and we'll get back to you as soon as possible.

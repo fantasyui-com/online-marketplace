@@ -1,0 +1,13 @@
+<form action="/charge" method="POST">
+  <input type="hidden" name="productDescription" value="{{inDoubleQuotedAttr title}} ({{inDoubleQuotedAttr license}})">
+  <script
+    src="https://checkout.stripe.com/checkout.js"
+    data-label="Buy ${{inHTMLData price}}"
+    class="stripe-button"
+    data-key="{{inDoubleQuotedAttr stripePublishableKey}}"
+    data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
+    data-name="{{inDoubleQuotedAttr title}}"
+    data-description="{{inDoubleQuotedAttr title}} ({{inDoubleQuotedAttr license}})"
+    data-amount="{{inDoubleQuotedAttr amount}}">
+  </script>
+</form>

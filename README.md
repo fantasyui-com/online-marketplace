@@ -83,3 +83,16 @@ Test system uses mocha.
 npm test;
 
 ```
+
+# Production
+
+## Using in Production
+
+You MUST set three ENV variables ```STRIPE_PUBLISHABLE_KEY```,
+```STRIPE_SECRET_KEY```, and ```DOWNLOAD_SECRET_KEY``` example:
+
+```sh
+
+STRIPE_PUBLISHABLE_KEY=pk_test_6pRNASCoBOKtIshFeQd4XMUh STRIPE_SECRET_KEY=sk_test_BQokikJOvBiI2HlWgH4olfQ2 DOWNLOAD_SECRET_KEY=sk_test_c40aeeb535784f3fa179b107c5ee8e99 node server.js
+
+```

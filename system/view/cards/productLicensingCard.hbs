@@ -6,10 +6,16 @@
         <div class="row">
 
             <div class="col-4 p-3"><span class="small text-muted">{{inHTMLData type}}:</span></div>
-            <div class="col-8 p-3 text-right">
-              <a href="#" class="btn btn-primary btn-sm btn-block buy-product" data-description="{{inDoubleQuotedAttr ../selectedProduct.title}} ({{inDoubleQuotedAttr type}})" data-amount="{{inDoubleQuotedAttr amount}}"><i class="fa fa-fw fa-cc-stripe"></i> ${{inHTMLData price}}</a>
+            <div class="col-8 p-3">
+              {{>
+                buyButton
+                stripePublishableKey=../stripePublishableKey
+                title=../selectedProduct.title
+                amount=amount
+                price=price
+                license=type
+              }}
             </div>
-
         </div>
       {{~/each}}
     </div>

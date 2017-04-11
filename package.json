@@ -42,9 +42,9 @@
       "urlPath": "/",
       "viewId": "index",
       "errorVerbosity": 5,
-      "dataWhitelist": [],
-      "loginRequired": false,
-      "userTags": [],
+
+
+
       "handlerEvent": [],
       "viewModel": [
         {
@@ -61,6 +61,7 @@
         }
       ]
     },
+
     {
       "routeName": "about",
       "moduleName": "simple-render",
@@ -68,12 +69,13 @@
       "urlPath": "/about",
       "viewId": "about",
       "errorVerbosity": 5,
-      "dataWhitelist": [],
-      "loginRequired": false,
-      "userTags": [],
+
+
+
       "handlerEvent": [],
       "viewModel": []
     },
+
     {
       "routeName": "products",
       "moduleName": "simple-render",
@@ -81,9 +83,9 @@
       "urlPath": "/products",
       "viewId": "products",
       "errorVerbosity": 5,
-      "dataWhitelist": [],
-      "loginRequired": false,
-      "userTags": [],
+
+
+
       "handlerEvent": [],
       "viewModel": [
         {
@@ -92,6 +94,8 @@
         }
       ]
     },
+
+
     {
       "routeName": "product",
       "moduleName": "simple-render",
@@ -107,8 +111,8 @@
           "id": "productName"
         }
       ],
-      "loginRequired": false,
-      "userTags": [],
+
+
       "handlerEvent": [
         {
           "name": "test",
@@ -127,6 +131,29 @@
           "end": 3
         }
       ]
+    },
+
+
+    {
+      "routeName": "charge",
+      "moduleName": "stripe-charge",
+      "httpVerb": "post",
+      "urlPath": "/charge",
+      "viewId": "charge",
+      "errorVerbosity": 5,
+      "handlerEvent": [],
+      "viewModel": []
+    },
+
+    {
+      "routeName": "download",
+      "moduleName": "download-file",
+      "httpVerb": "get",
+      "urlPath": "/download",
+      "errorVerbosity": 5,
+      "handlerEvent": [],
+      "viewModel": []
     }
+
   ]
 }

@@ -6,40 +6,10 @@
 <script src="https://checkout.stripe.com/checkout.js"></script>
 
 <script>
-
   $(function(){
-
-    var handler = StripeCheckout.configure({
-      key: "{{inDoubleQuotedAttr stripePublishableKey}}",
+    $('.e-mail').attr('href',"#support").click( function(e) {
+      var email = "{{{mangle 'fantasyui.com@gmail.com'}}}".split("").map(function(i){return String.fromCharCode(i.charCodeAt(0)+1)}).join("");
+      location.href = encodeURI("mailto:"+email+"?subject=Support");
     });
-
-    $('.buy-product').click( function(e) {
-
-      var description = $(this).data('description');
-      var amount = $(this).data('amount');
-
-      handler.open({
-        image: "https://stripe.com/img/documentation/checkout/marketplace.png",
-        name: "{{inDoubleQuotedAttr title}}",
-        description: description,
-        amount: amount,
-      });
-
-      e.preventDefault();
-    });
-
   });
-
-  $(function(){
-
-    $('.e-mail').text('Email Support').attr('href',"#support").click( function(e) {
-      var id = "e`ms`rxth-bnl".split("").map(function(i){return i.charCodeAt(0)+1}).map(function(i){return String.fromCharCode(i)}).join("");
-      var tld = "fl`hk-bnl".split("").map(function(i){return i.charCodeAt(0)+1}).map(function(i){return String.fromCharCode(i)}).join("");
-      location.href = encodeURI("mailto:"+id+String.fromCharCode(Math.pow(8,2))+tld+"?subject=Support");
-    });
-
-
-  });
-
-
 </script>
