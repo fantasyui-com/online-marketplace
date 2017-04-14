@@ -1,6 +1,9 @@
 # online-marketplace
 A simple and secure online marketplace for selling files.
 
+[![NPM](https://nodei.co/npm/online-marketplace.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/online-marketplace/)
+[![NPM](https://nodei.co/npm-dl/online-marketplace.png?months=1&height=3)](https://nodei.co/npm/online-marketplace/)
+
 ![Opening Intro](screenshots/a.jpg "Opening Intro")
 
 ![Product Layout](screenshots/b.jpg "Product Layout")
