@@ -4,6 +4,10 @@ const assert = require('assert');
 const system = require(path.join(__dirname,'..','index.js'));
 const pkg = require(path.join(__dirname,'..', 'package.json'));
 
+const crypto = require('crypto');
+const cipher = crypto.createCipher('aes192', 'a password');
+const decipher = crypto.createDecipher('aes192', 'a password');
+
 /*
     assert(value[, message])
     assert.deepEqual(actual, expected[, message])
@@ -41,6 +45,24 @@ describe('Server', function() {
     it('should return a listen function', mochaAsync( async () => {
       let x = await system.install(pkg);
       assert(x.listen);
+    }));
+
+    it('Decrypt string ABC', mochaAsync( async () => {
+      let x = await system.install(pkg);
+
+      const cleartext = 'some clear text data';
+
+      let encrypted = cipher.update(cleartext, 'utf8', 'hex');
+      encrypted += cipher.final('hex');
+      // console.log(encrypted);
+      // Prints: ca981be48e90867604588e75d04feabb63cc007a8f8ad89b10616ed84d815504
+
+      let decrypted = decipher.update(encrypted, 'hex', 'utf8');
+      decrypted += decipher.final('utf8');
+
+
+      assert.equal(decrypted, 'some clear text data');
+
     }));
 
   });
