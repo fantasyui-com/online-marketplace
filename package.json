@@ -5,8 +5,9 @@
   "description": "Smart, trustworthy, open, safe and secure. Build amazing things and join the sustainable lightweight design revolution.",
   "main": "index.js",
   "scripts": {
+    "preinstall": "(npm list nsp -g || npm install nsp -g)",
     "watch": "supervisor --extensions 'node,js,hbs,json' server.js",
-    "test": "mocha"
+    "test": "nsp check && mocha"
   },
   "config": {
     "host": "0.0.0.0",
