@@ -20,20 +20,21 @@
             <h4 class="card-title">{{inHTMLData productTitle}} ({{inHTMLData productLicense}}) - ${{inHTMLData paidAmount}}</h4>
 
             <ul class="list-group list-group-flush">
+              <li class="list-group-item"><strong>{{inHTMLData timestamp}}</strong></li>
               <li class="list-group-item text-muted">{{inHTMLData customerEmail}}</li>
               <li class="list-group-item">{{inHTMLData productTitle}}</li>
               <li class="list-group-item">{{inHTMLData productLicense}} License</li>
               <li class="list-group-item">${{inHTMLData paidAmount}}</li>
-              <li class="list-group-item"><a href="{{inDoubleQuotedAttr downloadLink }}">{{inHTMLData downloadLink}}</a></li>
+              <li class="list-group-item"><a href="{{inDoubleQuotedAttr downloadLink }}" style="word-break: break-all;">{{inHTMLData downloadLink}}</a></li>
             </ul>
 
             <div class="card-text text-right p-3">
               <a href="{{inDoubleQuotedAttr downloadLink}}" class="btn btn-primary">Download</a>
             </div>
 
-            <p class="card-text small text-muted">
-              Please bookmark your download link and save this receipt.
-            </p>
+            <div class="alert alert-info" role="alert">
+              <strong>Important!</strong> Please bookmark your download link, and save the receipt.
+            </div>
 
           </div>
 
