@@ -7,7 +7,7 @@
   "scripts": {
     "preinstall": "(npm list nsp -g || npm install nsp -g)",
     "watch": "supervisor --extensions 'node,js,hbs,json' server.js",
-    "test": "nsp check && mocha"
+    "test": "mocha && nsp check"
   },
   "config": {
     "host": "0.0.0.0",
@@ -25,12 +25,14 @@
   },
   "homepage": "https://github.com/fantasyui-com/online-marketplace#readme",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.17.1",
     "express": "^4.15.2",
     "hbs": "^4.0.1",
     "lodash": "^4.17.4",
     "marked": "^0.3.6",
     "mocha": "^3.2.0",
+    "moment": "^2.18.1",
     "product-catalog": "^1.0.4",
     "stripe": "^4.17.1",
     "xss-filters": "^1.2.7"
