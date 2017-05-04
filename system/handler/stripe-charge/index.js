@@ -3,7 +3,6 @@
 
 const keyPublishable = process.env.STRIPE_PUBLISHABLE_KEY||'pk_test_6pRNASCoBOKtIshFeQd4XMUh';
 const stripeKeySecret = process.env.STRIPE_SECRET_KEY||'sk_test_BQokikJOvBiI2HlWgH4olfQ2';
-const downloadKeySecret = process.env.DOWNLOAD_SECRET_KEY||'sk_test_c40aeeb535784f3fa179b107c5ee8e99';
 
 const crypto = require("crypto");
 const stripe = require("stripe")(stripeKeySecret);
