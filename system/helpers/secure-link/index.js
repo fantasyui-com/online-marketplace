@@ -1,6 +1,8 @@
-const downloadKeySecret = process.env.DOWNLOAD_SECRET_KEY||'sk_test_c40aeeb535784f3fa179b107c5ee8e99';
+const downloadKeySecret = process.env.DOWNLOAD_SECRET_KEY || 'sk_test_c40aeeb535784f3fa179b107c5ee8e99';
+const downloadSaltSecret = process.env.DOWNLOAD_SECRET_SALT || 'st_test_784f3fa179b3f3f50a7c5faeeb5ee87c';
 
 const { URLSearchParams } = require('url');
+
 const moment = require('moment');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
@@ -21,13 +23,11 @@ class SecureLink {
     this._envelope = new URLSearchParams();
   }
 
-
   expiration() {
     // if missing, add it in.
     if(!this._information.get('expiration')){
       this._information.append('expiration', (new Date).getTime() + this._maxAge );
     }
-
     if(this._information.get('expiration') < (new Date).getTime() ){
       throw new Error(`This link expired ${moment( parseInt(this._information.get('expiration')) ).fromNow()}.`);
     }
@@ -36,9 +36,12 @@ class SecureLink {
 
   hash() {
     this._information.sort();
+    this._information.append('secret', downloadSaltSecret);
     var salt = bcrypt.genSaltSync(10);
     var hash = bcrypt.hashSync(this._information.toString(), salt);
     this._information.append('hash', hash);
+    this._information.delete('secret', downloadSaltSecret);
+
   }
 
   encrypt() {
@@ -66,9 +69,13 @@ class SecureLink {
 
   verify() {
     if( this._envelope.get("email") !== this._information.get("email") ) throw new Error("envelope email mismatch");
+
     const remoteHash = this._information.get("hash");
     this._information.delete("hash");
+    this._information.append('secret', downloadSaltSecret);
     if(! bcrypt.compareSync(this._information.toString(), remoteHash) ) throw new Error("information hash mismatch");
+    this._information.delete("secret");
+
   }
 
   params () {
