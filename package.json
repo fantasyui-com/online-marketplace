@@ -2,7 +2,7 @@
   "title": "Fantasy Marketplace",
   "name": "online-marketplace",
   "version": "3.0.4",
-  "description": "Smart, trustworthy, open, safe and secure. Build amazing things and join the sustainable lightweight design revolution.",
+  "description": "Smart, trustworthy, open, portable, safe and secure. Build amazing things and join the sustainable lightweight design revolution.",
   "main": "index.js",
   "scripts": {
     "preinstall": "(npm list nsp -g || npm install nsp -g)",
