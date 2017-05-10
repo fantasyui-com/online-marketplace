@@ -5,12 +5,7 @@
   - solve CAPTCHA for re-download page
 
 - Extras
-  - pm2 usage examples
   - Fix Mocha Tests
-
-- Hmm
-  - Easy Deploy Buttons? (Deploy from github feature)
-  - BASH Install Script?
 
 ###### Bash install examples...
 
