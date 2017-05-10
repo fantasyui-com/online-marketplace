@@ -1,0 +1,88 @@
+#!/bin/bash
+
+########
+# CORE #
+########
+
+# NOT-UDF name="setup_hostname" label="Hostname" default="jcombinator.com"
+# [ -z "$SETUP_HOSTNAME" ] && SETUP_HOSTNAME="jcombinator.com";
+# hostnamectl set-hostname --static $SETUP_HOSTNAME;
+# hostname is left alone for CNAME records.
+
+# <UDF name="setup_username" label="Nonroot Username" default="meow">
+# <UDF name="setup_password" label="Nonroot Password" default="123">
+# [ -z "$SETUP_USERNAME" ] && SETUP_USERNAME="meow";
+# [ -z "$SETUP_PASSWORD" ] && SETUP_PASSWORD="123";
+useradd -G wheel $SETUP_USERNAME
+echo "$SETUP_USERNAME:$SETUP_PASSWORD" | chpasswd;
+
+# Used for SSH
+firewall-cmd --zone=FedoraServer --add-port=$SSHPORT/tcp --permanent;
+
+# Public Port 80, used in port masquerade
+firewall-cmd --zone=FedoraServer --add-port=80/tcp --permanent;
+
+# 80 -> 8080 masquerade
+firewall-cmd --zone=FedoraServer --add-masquerade --permanent;
+firewall-cmd --zone=FedoraServer --add-forward-port=port=80:proto=tcp:toport=8080 --permanent;
+firewall-cmd --reload
+
+# SSH
+# <UDF name="sshport" label="SSH Port" default="78">
+# [ -z "$SSHPORT" ] && SSHPORT="78";
+sed -i 's/#Port 22/Port '$SSHPORT'/' /etc/ssh/sshd_config
+sed -i -e "s/PermitRootLogin yes/PermitRootLogin no/" /etc/ssh/sshd_config
+sed -i -e "s/#PermitRootLogin no/PermitRootLogin no/" /etc/ssh/sshd_config
+systemctl reload sshd
+# /bin/systemctl restart  sshd.service
+
+dnf upgrade -y
+
+dnf install dnf-automatic -y
+systemctl enable dnf-automatic.timer
+systemctl start dnf-automatic.timer
+
+dnf install git -y
+
+
+########
+# USER #
+########
+
+(
+cat <<'EOF'
+#!/bin/bash
+
+curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.1/install.sh | bash
+export NVM_DIR="$HOME/.nvm"; [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+nvm install node # node installed
+npm i -g pm2 # pm2 installed
+
+exit 0
+EOF
+) > /home/$SETUP_USERNAME/StackScript;
+chmod +x /home/$SETUP_USERNAME/StackScript;
+runuser -l meow -c /home/$SETUP_USERNAME/StackScript;
+
+### INITIALIZE PM2
+env PATH=$PATH:/home/$SETUP_USERNAME/.nvm/versions/node/v7.10.0/bin /home/$SETUP_USERNAME/.nvm/versions/node/v7.10.0/lib/node_modules/pm2/bin/pm2 startup systemd -u $SETUP_USERNAME --hp /home/$SETUP_USERNAME
+
+
+(
+cat <<'EOF'
+#!/bin/bash
+
+cd ~
+git clone https://github.com/fantasyui-com/online-marketplace.git
+cd online-marketplace/
+npm i;
+
+cd ~
+pm2 start online-marketplace/server.js
+pm2 save
+
+exit 0
+EOF
+) > /home/$SETUP_USERNAME/NodeScript;
+chmod +x /home/$SETUP_USERNAME/NodeScript;
+runuser -l meow -c /home/$SETUP_USERNAME/NodeScript;
