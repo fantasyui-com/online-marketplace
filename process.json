@@ -5,7 +5,7 @@
 
     "name": "online-marketplace",
     "script":"server.js",
-    "cwd":"/home/meow/online-marketplace",
+    "cwd":"/home/marketplace/online-marketplace",
 
     "env": {
 

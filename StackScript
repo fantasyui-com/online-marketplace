@@ -4,7 +4,7 @@
 # USER #
 ########
 
-# <UDF name="setup_username" label="Nonroot Username">
+# <UDF name="setup_username" label="Nonroot Username" default="marketplace">
 # <UDF name="setup_password" label="Nonroot Password">
 useradd -G wheel $SETUP_USERNAME
 echo "$SETUP_USERNAME:$SETUP_PASSWORD" | chpasswd;
@@ -56,7 +56,7 @@ exit 0
 EOF
 ) > /home/$SETUP_USERNAME/StackScript;
 chmod +x /home/$SETUP_USERNAME/StackScript;
-runuser -l meow -c /home/$SETUP_USERNAME/StackScript;
+runuser -l $SETUP_USERNAME -c /home/$SETUP_USERNAME/StackScript;
 
 ### INITIALIZE PM2
 env PATH=$PATH:/home/$SETUP_USERNAME/.nvm/versions/node/v7.10.0/bin /home/$SETUP_USERNAME/.nvm/versions/node/v7.10.0/lib/node_modules/pm2/bin/pm2 startup systemd -u $SETUP_USERNAME --hp /home/$SETUP_USERNAME
@@ -81,4 +81,4 @@ exit 0
 EOF
 ) > /home/$SETUP_USERNAME/NodeScript;
 chmod +x /home/$SETUP_USERNAME/NodeScript;
-runuser -l meow -c /home/$SETUP_USERNAME/NodeScript;
+runuser -l $SETUP_USERNAME -c /home/$SETUP_USERNAME/NodeScript;
