@@ -178,7 +178,7 @@ If you choose to use pm2 you can activate the provided process.json via ```$> st
 
     "name": "online-marketplace",
     "script":"server.js",
-    "cwd":"/home/meow/online-marketplace/",
+    "cwd":"/home/meow/online-marketplace",
 
     "env": {
 
