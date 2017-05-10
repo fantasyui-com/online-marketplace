@@ -125,11 +125,42 @@ npm test;
 
 ## Using in Production
 
-You MUST set three ENV variables ```STRIPE_PUBLISHABLE_KEY```,
-```STRIPE_SECRET_KEY```, and ```DOWNLOAD_SECRET_KEY``` example:
+### Installing node and pm2 for production
+curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.1/install.sh | bash
+export NVM_DIR="$HOME/.nvm"; [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+nvm install node # node installed
+npm i -g pm2 # pm2 installed
+
+### Installing marketplace for production
 
 ```sh
 
-STRIPE_PUBLISHABLE_KEY=pk_test_6pRNASCoBOKtIshFeQd4XMUh STRIPE_SECRET_KEY=sk_test_BQokikJOvBiI2HlWgH4olfQ2 DOWNLOAD_SECRET_KEY=sk_test_c40aeeb535784f3fa179b107c5ee8e99 node server.js
+cd ~
+git clone https://github.com/fantasyui-com/online-marketplace.git
+cd online-marketplace/
+npm i;
+
+```
+
+### Using a Process manager (pm2) to manage the server:
+
+```sh
+
+cd ~
+pm2 start online-marketplace/server.js
+pm2 save
+
+```
+### Environment Variables
+
+You MUST set three ENV variables ```STRIPE_PUBLISHABLE_KEY```, ```STRIPE_SECRET_KEY```, ```DOWNLOAD_SECRET_KEY```, and ```DOWNLOAD_SECRET_SALT``` example:
+
+```sh
+
+STRIPE_PUBLISHABLE_KEY=pk_test_6pRNASCoBOKtIshFeQd4XMUh \
+STRIPE_SECRET_KEY=sk_test_BQokikJOvBiI2HlWgH4olfQ2 \
+DOWNLOAD_SECRET_KEY=sk_test_c40aeeb535784f3fa179b107c5ee8e99 \
+DOWNLOAD_SECRET_SALT=st_test_784f3fa179b3f3f50a7c5faeeb5ee87c \
+node server.js
 
 ```
