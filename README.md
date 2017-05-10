@@ -164,3 +164,34 @@ DOWNLOAD_SECRET_SALT=st_test_784f3fa179b3f3f50a7c5faeeb5ee87c \
 node server.js
 
 ```
+
+### Process JSON
+
+If you choose to use pm2 you can activate the provided process.json via ```$> start online-marketplace/process.json``` please remember to update and guard the secret keys.
+
+```json
+
+{
+  "apps": [
+
+    {
+
+    "name": "online-marketplace",
+    "script":"server.js",
+    "cwd":"/home/meow/online-marketplace/",
+
+    "env": {
+
+      "STRIPE_PUBLISHABLE_KEY" : "pk_test_6pRNASCoBOKtIshFeQd4XMUh",
+      "STRIPE_SECRET_KEY"      : "sk_test_BQokikJOvBiI2HlWgH4olfQ2",
+      "DOWNLOAD_SECRET_KEY"    : "sk_test_c40aeeb535784f3fa179b107c5ee8e99",
+      "DOWNLOAD_SECRET_SALT"   : "st_test_784f3fa179b3f3f50a7c5faeeb5ee87c",
+      }
+
+    }
+
+  ]
+}
+
+
+```
