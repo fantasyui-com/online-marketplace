@@ -77,7 +77,7 @@ npm start
 
 ```
 
-at this point you will see [http://0.0.0.0:3000/](http://0.0.0.0:3000/)
+at this point you will see [http://0.0.0.0:8080/](http://0.0.0.0:8080/)
 navigate to the address to view the homepage.
 
 
