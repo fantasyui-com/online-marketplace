@@ -24,7 +24,7 @@ marked.setOptions({ renderer });
 
 const xssFilters = require('xss-filters');
 hbs.registerHelper('about', function(str) { return marked( fs.readFileSync(path.join(__dirname,'ABOUT.md')).toString() ) });
-hbs.registerHelper('mangle', function(str) { console.log(str); let response=str.split("").map(i=>i.charCodeAt(0)-1).map(i=>String.fromCharCode(i)).join(""); console.log(response); return response; });
+hbs.registerHelper('mangle', function(str) { return str.split("").map(i=>i.charCodeAt(0)-1).map(i=>String.fromCharCode(i)).join("")} );
 hbs.registerHelper('inHTMLData', function(str) { return xssFilters.inHTMLData(str); });
 hbs.registerHelper('inSingleQuotedAttr', function(str) { return xssFilters.inSingleQuotedAttr(str); });
 hbs.registerHelper('inDoubleQuotedAttr', function(str) { return xssFilters.inDoubleQuotedAttr(str); });
