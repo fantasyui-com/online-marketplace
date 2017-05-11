@@ -2,13 +2,12 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
-
 <script src="https://checkout.stripe.com/checkout.js"></script>
 
 <script>
   $(function(){
     $('.e-mail').attr('href',"#support").click( function(e) {
-      var email = "{{{mangle 'fantasyui.com@gmail.com'}}}".split("").map(function(i){return String.fromCharCode(i.charCodeAt(0)+1)}).join("");
+      var email = "{{{mangle email}}}".split("").map(function(i){return String.fromCharCode(i.charCodeAt(0)+1)}).join("");
       location.href = encodeURI("mailto:"+email+"?subject=Support");
     });
   });
