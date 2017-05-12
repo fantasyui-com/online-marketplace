@@ -1,7 +1,7 @@
 {
   "title": "Fantasy Marketplace",
   "name": "online-marketplace",
-  "version": "4.3.0",
+  "version": "4.3.1",
   "description": "Smart, trustworthy, open, portable, safe and secure. Build amazing things and join the sustainable lightweight design revolution.",
   "main": "index.js",
   "scripts": {
