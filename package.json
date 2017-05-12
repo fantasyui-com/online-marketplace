@@ -51,13 +51,13 @@
           "name": "featuredProducts",
           "module": "featured-products",
           "begin": 0,
-          "end": 4
+          "end": 6
         },
         {
           "name": "popularProducts",
           "module": "popular-products",
           "begin": 0,
-          "end": 3
+          "end": 9
         }
       ]
     },
@@ -116,7 +116,7 @@
           "name": "relatedProducts",
           "module": "related-products",
           "begin": 0,
-          "end": 3
+          "end": 9
         }
       ]
     },
