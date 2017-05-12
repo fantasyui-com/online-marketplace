@@ -1,8 +1,14 @@
-# About
+# About Us
 
-Trustworthy, Open, Safe and Secure. Fantastic Online Marketplace: Build amazing things, join the sustainable lightweight design revolution.
+We sell valuable enhanced Open Source software bundles created via highly automated and thus sustainable production pipelines.
 
-Designed and built with all the <i class="fa fa-fw fa-heartbeat text-danger"></i> and <i class="fa fa-fw fa-bolt text-warning"></i> in the world by [Captain Fantasy](https://github.com/fantasyui-com) and [fantasyui.com](http://fantasyui.com).
+A single well crafted product goes a long way, but we go far beyond that and offer a broad selection of symmetric product variations in shape of mass product bundles - whatever you need, has already been crafted for you.
+
+Trustworthy, open, safe and secure. We build amazing things.
+
+# The Marketplace
+
+The marketplace is Designed and built with all the <i class="fa fa-fw fa-heartbeat text-danger"></i> and <i class="fa fa-fw fa-bolt text-warning"></i> in the world by [Captain Fantasy](https://github.com/fantasyui-com) and [fantasyui.com](http://fantasyui.com).
 
 Maintained at [fantasyui-com/online-marketplace](https://github.com/fantasyui-com/online-marketplace) with the help of [our contributors](https://github.com/fantasyui-com/online-marketplace/graphs/contributors).
 
