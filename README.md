@@ -1,5 +1,5 @@
 # online-marketplace
-A simple and secure online marketplace for selling files. online-marketplace safely encodes purchase information in urls (AES(bcrypt-hash)) and performs operations via automated, interactive email system.
+A wise and secure online marketplace for selling files. online-marketplace safely encodes purchase information in urls (AES(bcrypt-hash)) and performs operations via automated, interactive email system.
 
 ![Opening Intro](screenshots/a.jpg "Opening Intro")
 
