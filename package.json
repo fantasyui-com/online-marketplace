@@ -12,7 +12,7 @@
   "config": {
     "email": "captain@eselr.com",
     "domains": [ "eselr.com", "www.eselr.com" ],
-    "ports": { "http": 80, "https": 443 },
+    "ports": { "http": 80, "https": 443 }
   },
   "repository": {
     "type": "git",
