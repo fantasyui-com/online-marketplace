@@ -10,8 +10,9 @@
     "test": "mocha && nsp check"
   },
   "config": {
-    "host": "0.0.0.0",
-    "port": "8080"
+    "email": "captain@eselr.com",
+    "domains": [ "eselr.com", "www.eselr.com" ],
+    "ports": { "http": 80, "https": 443 },
   },
   "repository": {
     "type": "git",
@@ -25,6 +26,7 @@
   },
   "homepage": "https://github.com/fantasyui-com/online-marketplace#readme",
   "dependencies": {
+    "auto-sni": "^2.1.1",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.17.1",
     "express": "^4.15.2",
