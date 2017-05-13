@@ -32,6 +32,7 @@ hbs.registerHelper('inUnQuotedAttr', function(str) { return xssFilters.inUnQuote
 
 const express = require('express');
 const app = express();
+app.use(express.static('public'))
 
 app.set('views', [ path.join(__dirname, 'system', 'view') ]);
 app.set("view engine", "hbs");
