@@ -1,5 +1,3 @@
-const downloadKeySecret = process.env.DOWNLOAD_SECRET_KEY||'sk_test_c40aeeb535784f3fa179b107c5ee8e99';
-
 const fs = require("fs");
 const path = require("path");
 const mime = require("mime");

@@ -1,14 +1,9 @@
-//NOTE: withut proper variables the system drops into test mode.
-//NOTE: to run with keys: $> STRIPE_PUBLISHABLE_KEY=pk_test_6pRNASCoBOKtIshFeQd4XMUh STRIPE_SECRET_KEY=sk_test_BQokikJOvBiI2HlWgH4olfQ2 node app.js
-
-const keyPublishable = process.env.STRIPE_PUBLISHABLE_KEY||'pk_test_6pRNASCoBOKtIshFeQd4XMUh';
-const stripeKeySecret = process.env.STRIPE_SECRET_KEY||'sk_test_BQokikJOvBiI2HlWgH4olfQ2';
-
 const crypto = require("crypto");
+
+const stripeKeySecret = process.env.STRIPE_SECRET_KEY||'sk_test_BQokikJOvBiI2HlWgH4olfQ2';
 const stripe = require("stripe")(stripeKeySecret);
 
 const productLookup = require("../../helpers/product-object-lookup");
-
 const SecureLink = require("../../helpers/secure-link");
 
 module.exports = async function({route}){
