@@ -200,3 +200,9 @@ If you choose to use pm2 you can activate the provided process.json via ```$> st
 
 
 ```
+
+### Low Number Ports
+Server requires access to low level ports 80 (http) and 443 (https) to operate by default.
+On linux servers you can use the following command to give Node access to these ports.
+Note use of ```sudo setcap cap_net_bind_service=+ep $(which node)```
+Note: Port forwarding is the preferred method.
