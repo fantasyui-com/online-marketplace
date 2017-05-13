@@ -1,7 +1,7 @@
 {
   "title": "Fantasy Marketplace",
   "name": "online-marketplace",
-  "version": "4.3.1",
+  "version": "5.0.0",
   "description": "Smart, trustworthy, open, portable, safe and secure. Build amazing things and join the sustainable lightweight design revolution.",
   "main": "index.js",
   "scripts": {
@@ -11,8 +11,14 @@
   },
   "config": {
     "email": "captain@eselr.com",
-    "domains": [ "eselr.com", "www.eselr.com" ],
-    "ports": { "http": 80, "https": 443 }
+    "domains": [
+      "eselr.com",
+      "www.eselr.com"
+    ],
+    "ports": {
+      "http": 80,
+      "https": 443
+    }
   },
   "repository": {
     "type": "git",
