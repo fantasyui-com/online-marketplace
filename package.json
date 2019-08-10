@@ -42,7 +42,7 @@
     "mocha": "^6.2.0",
     "moment": "^2.24.0",
     "product-catalog": "^1.4.0",
-    "stripe": "^7.4.0",
+    "stripe": "^7.7.0",
     "uuid": "^3.3.2",
     "xss-filters": "^1.2.7"
   },
