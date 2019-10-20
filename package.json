@@ -39,7 +39,7 @@
     "hbs": "^4.0.6",
     "lodash": "^4.17.15",
     "marked": "^0.7.0",
-    "mocha": "^6.2.1",
+    "mocha": "^6.2.2",
     "moment": "^2.24.0",
     "product-catalog": "^1.4.0",
     "stripe": "^7.10.0",
