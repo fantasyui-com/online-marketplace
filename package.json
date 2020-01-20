@@ -43,7 +43,7 @@
     "moment": "^2.24.0",
     "product-catalog": "^1.4.0",
     "stripe": "^7.15.0",
-    "uuid": "^3.3.3",
+    "uuid": "^3.4.0",
     "xss-filters": "^1.2.7"
   },
   "routes": [
