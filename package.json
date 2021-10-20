@@ -7,7 +7,8 @@
   "scripts": {
     "preinstall": "(npm list nsp -g || npm install nsp -g)",
     "watch": "supervisor --extensions 'node,js,hbs,json' server.js",
-    "test": "mocha && nsp check"
+    "test": "mocha && nsp check",
+    "save": "git add .; git commit -m 'New Release'; git push; npm version patch; npm publish; git push;"
   },
   "config": {
     "email": "captain@eselr.com",
@@ -25,7 +26,7 @@
     "url": "git+https://github.com/fantasyui-com/online-marketplace.git"
   },
   "keywords": [],
-  "author": "Captain Fantasy <fantasyui.com@gmail.com> (http://fantasyui.com)",
+  "author": "fantasyui.com <fantasyui.com@gmail.com>",
   "license": "GPL-3.0",
   "bugs": {
     "url": "https://github.com/fantasyui-com/online-marketplace/issues"
@@ -39,7 +40,7 @@
     "hbs": "^4.1.0",
     "lodash": "^4.17.15",
     "marked": "^0.7.0",
-    "mocha": "^6.2.2",
+    "mocha": "^9.1.3",
     "moment": "^2.24.0",
     "product-catalog": "^1.4.0",
     "stripe": "^7.15.0",
